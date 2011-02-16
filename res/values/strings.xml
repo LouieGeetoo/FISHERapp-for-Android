@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, FISHERapp!</string>
+    <string name="app_name">FISHERapp</string>
+    <string name="just_synced">Just synced.</string>
+    <string name="synced_recently">Synced recently.</string>
+    <string name="last_sync_failed">Last sync failed.</string>
+    <string name="cached">Cached.</string>
+<string name="directory">Directory</string>
+<string name="pending">Pending...</string>
+<string name="syncing">Syncing...</string>
+<string name="synced">Synced.</string>
+<string name="sync_failed">Sync failed.</string>
+<string name="peopleurl">http://dl.dropbox.com/u/6648787/Projects/Fisherapp/directory/people.xml</string>
+</resources>
