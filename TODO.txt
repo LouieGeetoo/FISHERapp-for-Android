@@ -1,0 +1,14 @@
+TODO
+
+People
+- Add People entry details view
+- Add progress dialog to show during initial sync only
+- Add Search functionality to People
+
+Web Links
+- Add Web Links activity
+
+Places
+- Add Places activity
+- Add Dining, Offices, SLC, and Library activities
+- Add Place details view (hours, contact info)
