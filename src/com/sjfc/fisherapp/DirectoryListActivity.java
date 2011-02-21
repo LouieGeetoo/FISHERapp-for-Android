@@ -236,14 +236,12 @@ public class DirectoryListActivity extends DirectoryActivity {
     }
     
     private void updateFirstSyncMessage() {
-    	/*
     	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
     	if (mCursor.getCount() == 0) {
     		firstSyncMessage.setVisibility(View.VISIBLE);
     	} else {
     		firstSyncMessage.setVisibility(View.GONE);
     	}
-    	*/
     }
     
 	public boolean isPeopleField(String tag) {

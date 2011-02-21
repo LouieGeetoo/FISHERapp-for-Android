@@ -20,34 +20,30 @@ import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 public class DirectoryDetailsActivity extends DirectoryActivity {
 	
-	public final Handler mHandler = new Handler();
 	private SimpleCursorAdapter adapter;
-	boolean syncing = false;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.directory_list);
+        setContentView(R.layout.directory_details);
 
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
         txtTitle.setText(R.string.directory);
         TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-        txtUpdateStatus.setText(R.string.waiting_to_sync);
+        txtUpdateStatus.setText(R.string.blank);
 
     	/** Listen for logo push */
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		// Refresh!
-        		startXMLParseThread();
+        		// TODO: Return to Directory list
         	}
         });
         
         fillPeopleListView();
         
-        startXMLParseThread();
         
     }
     
@@ -96,95 +92,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
     	av.setAdapter(adapter);
     }
     
-    private void startXMLParseThread() {
-    	
-    	
-    	
-    	if (!syncing) {
-    		TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-            txtUpdateStatus.setText(R.string.syncing);
-            
-            new Thread () {
-        		
-        		boolean success = false;
-        		
-        		public void run() {
-        			try {
-        				if (!syncing) {
-        					syncing = true;
-            				
-        		    		mDB.delete(directoryPeople.TEMP_TABLE, null, null);
-        		    		
-        		    	    XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
-        		    	    XmlPullParser parser = parserCreator.newPullParser();
-        		    	    
-        		    	    String XMLaddress = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
-        	    	        URL feed = new URL(XMLaddress);
-        		    	    parser.setInput(feed.openStream(), null);
-        		    	    
-        		    	    ContentValues entry = new ContentValues();
-        		    	    int parserEvent = parser.getEventType();
-        		    	    String tag = "";
-        		    	    String value = "";
-        		    	    
-        		    	    while (parserEvent != XmlPullParser.END_DOCUMENT) {
-        		    	    	if(parserEvent == XmlPullParser.START_TAG) {
-        		    	    		tag = parser.getName();
-        		    	    		if (isPeopleField(tag)) {
-        		    	    			parserEvent = parser.next();
-        		    	    			value =  parser.getText();
-        		    		    		entry.put(tag, value);
-        		    		    		//Log.d("Fisherapp", "Parsed " + tag + ": " + value);
-        		    	    		}
-        		    	    	}
-        		    	    	if(parserEvent == XmlPullParser.END_TAG && parser.getName().compareTo("ROW") == 0) {
-        		    	    		mDB.insert(directoryPeople.TEMP_TABLE, null, entry);
-        		    	    		Log.d("Fisherapp", "Entry added to table_temp.");
-        		    				entry.clear();
-        		    	    	}
-        		    	     	parserEvent = parser.next();
-        		    	    }
-        		    	    Log.d("Fisherapp", "Finished parsing People XML.");
-        		    	    
-        		    	 // Copy temp table to permanent table
-        		        	mDB.delete(directoryPeople.PEOPLE_TABLE, null, null);
-        		        	
-        		        	String copyQuery = "INSERT INTO " + directoryPeople.PEOPLE_TABLE
-        		        		+ " SELECT * FROM " + directoryPeople.TEMP_TABLE;
-        		        	
-        		        	mDB.execSQL(copyQuery);
-        		        	
-        		        	// Delete contents of temp table
-        		        	mDB.delete(directoryPeople.TEMP_TABLE, null, null);
-        		        	Log.d("Fisherapp", "Data copied to table_people.");
-        		        	success = true;
-        				}
-    		        	
-        			} catch (Exception e) {
-        				Log.e("Fisherapp", "XML Parse Error: " + e.toString());
-        				success = false;
-        			}
-        			
-        			mHandler.post(new Runnable() {
-        				public void run() {
-        					if (!syncing) {
-        						TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-            		        	if (success) {
-            			        	txtUpdateStatus.setText(R.string.synced);
-            		        	} else {
-            		            	txtUpdateStatus.setText(R.string.sync_failed);
-            		        	}
-            		        	// Refresh the ListView
-            		        	adapter.getCursor().requery();
-            		        	adapter.notifyDataSetChanged();
-            		        	updateFirstSyncMessage();
-        					}
-        				}
-        			});
-        		}
-        	}.start();
-    	}    	
-    }
+
     
     private void updateFirstSyncMessage() {
     	/*
