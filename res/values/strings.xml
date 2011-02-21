@@ -7,9 +7,11 @@
     <string name="last_sync_failed">Last sync failed.</string>
     <string name="cached">Cached.</string>
 <string name="directory">Directory</string>
-<string name="pending">Pending...</string>
 <string name="syncing">Syncing...</string>
 <string name="synced">Synced.</string>
 <string name="sync_failed">Sync failed.</string>
 <string name="peopleurl">http://dl.dropbox.com/u/6648787/Projects/Fisherapp/directory/people.xml</string>
+<string name="waiting_to_sync">Waiting to sync...</string>
+<string name="first_sync_message">Please wait while the directory is synced for the first time. (It\'ll only take this long once, promise!)</string>
+<string name="blank"></string>
 </resources>

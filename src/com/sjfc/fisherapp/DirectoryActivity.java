@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import com.sjfc.fisherapp.R;
 
 public class DirectoryActivity extends Activity {
 

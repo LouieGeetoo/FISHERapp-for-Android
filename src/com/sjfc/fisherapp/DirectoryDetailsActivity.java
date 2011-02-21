@@ -1,13 +1,11 @@
 package com.sjfc.fisherapp;
 
 import java.net.URL;
-import java.util.Calendar;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,30 +18,23 @@ import android.widget.TextView;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
-public class DirectoryListActivity extends DirectoryActivity {
+public class DirectoryDetailsActivity extends DirectoryActivity {
 	
-	public static final String PREFS_NAME = "FisherappPrefs";
 	public final Handler mHandler = new Handler();
 	private SimpleCursorAdapter adapter;
 	boolean syncing = false;
-	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        // Restore preferences
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-    	SharedPreferences.Editor prefsEditor = settings.edit();
-        syncing = settings.getBoolean("isSyncing", false);
-        
         setContentView(R.layout.directory_list);
 
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
         txtTitle.setText(R.string.directory);
         TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-        txtUpdateStatus.setText(R.string.blank);
+        txtUpdateStatus.setText(R.string.waiting_to_sync);
 
     	/** Listen for logo push */
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
@@ -56,30 +47,8 @@ public class DirectoryListActivity extends DirectoryActivity {
         
         fillPeopleListView();
         
-        if (timeForSync()) {
-        	startXMLParseThread();
-        }
-
-    }
-    
-    private boolean timeForSync() {
-    	// if NOW is at least 1 week since LASTSYNCDATE, return true; else return false
-    	Calendar cal = Calendar.getInstance();
-    	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
-    	int yearNow = cal.get(Calendar.YEAR);
-    	Log.d("Fisherapp", "Current date: Week " + weekNow + " of " + yearNow);
-    	String thisWeek = yearNow + "." + weekNow;
-    	
-    	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String lastSync = settings.getString("lastSynced", "0.0");
-    	
-        if (thisWeek.compareTo(lastSync) != 0) {
-        	Log.d("Fisherapp", "Time for sync. Now: " + thisWeek + ", Last Sync: " + lastSync);
-        	return true;
-        } else {
-        	Log.d("Fisherapp", "No sync needed. Now: " + thisWeek + ", Last Sync: " + lastSync);
-        	return false;
-        }
+        startXMLParseThread();
+        
     }
     
     private void fillPeopleListView() {
@@ -128,6 +97,9 @@ public class DirectoryListActivity extends DirectoryActivity {
     }
     
     private void startXMLParseThread() {
+    	
+    	
+    	
     	if (!syncing) {
     		TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
             txtUpdateStatus.setText(R.string.syncing);
@@ -140,10 +112,6 @@ public class DirectoryListActivity extends DirectoryActivity {
         			try {
         				if (!syncing) {
         					syncing = true;
-        					SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        					SharedPreferences.Editor prefsEditor = settings.edit();
-							prefsEditor.putBoolean("isSyncing", syncing);
-							prefsEditor.commit();
             				
         		    		mDB.delete(directoryPeople.TEMP_TABLE, null, null);
         		    		
@@ -190,27 +158,11 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	mDB.delete(directoryPeople.TEMP_TABLE, null, null);
         		        	Log.d("Fisherapp", "Data copied to table_people.");
         		        	success = true;
-        		        	syncing = false;
-        		        	
-        		        	Calendar cal = Calendar.getInstance();
-        		        	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
-        		        	int yearNow = cal.get(Calendar.YEAR);
-        		        	Log.d("Fisherapp", "Sync finished: Week " + weekNow + " of " + yearNow);
-        		        	String thisWeek = yearNow + "." + weekNow;
-        		        	
-        		        	prefsEditor.putString("lastSynced", thisWeek);
-        		        	prefsEditor.putBoolean("isSyncing", syncing);
-							prefsEditor.commit();
         				}
     		        	
         			} catch (Exception e) {
         				Log.e("Fisherapp", "XML Parse Error: " + e.toString());
         				success = false;
-        				syncing = false;
-        				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        				SharedPreferences.Editor prefsEditor = settings.edit();
-        				prefsEditor.putBoolean("isSyncing", syncing);
-						prefsEditor.commit();
         			}
         			
         			mHandler.post(new Runnable() {
@@ -224,8 +176,7 @@ public class DirectoryListActivity extends DirectoryActivity {
             		        	}
             		        	// Refresh the ListView
             		        	adapter.getCursor().requery();
-            		        	//adapter.notifyDataSetChanged();
-            		        	Log.d("Fisherapp", "ListView Cursor refreshed.");
+            		        	adapter.notifyDataSetChanged();
             		        	updateFirstSyncMessage();
         					}
         				}

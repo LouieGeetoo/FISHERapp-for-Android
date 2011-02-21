@@ -12,7 +12,7 @@ public final class FisherappDatabase {
 		private directoryPeople() {}
 		public static final String PEOPLE_TABLE = "table_directory_people";
 		public static final String TEMP_TABLE = "table_directory_temp";
-		public static final String GROUP_NAME = "GROUP_NAME";
+		public static final String FAC_STAFF_DIR = "FAC_STAFF_DIR";
 		public static final String LAST_NAME = "LAST_NAME";
 		public static final String FIRST_NAME = "FIRST_NAME";
 		public static final String MIDDLE_NAME = "MIDDLE_NAME";

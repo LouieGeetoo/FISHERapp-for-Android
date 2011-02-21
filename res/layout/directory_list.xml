@@ -6,6 +6,26 @@
     android:background="@android:color/white">
     <include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
     <include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
+	<LinearLayout android:id="@+id/emptyBox"
+		android:orientation="vertical"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_gravity="center"
+		android:visibility="gone">
+		<TextView android:id="@+id/TextView01"
+	        android:layout_height="wrap_content"
+	        android:background="@android:color/white"
+	        android:textSize="20sp"
+	        android:textColor="@android:color/black"
+	        android:text="@string/first_sync_message"
+	        android:layout_width="wrap_content"
+	        android:layout_margin="20dp"/>
+		<ProgressBar android:id="@+id/ProgressBar01"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			style="@android:style/Widget.ProgressBar.Large.Inverse" />
+	</LinearLayout>
 	<ListView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
