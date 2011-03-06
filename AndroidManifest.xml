@@ -8,12 +8,14 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
         <activity android:name="DirectoryListActivity"
-                  android:label="@string/app_name">
+                  android:label="Fisher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+		<activity android:name="DirectoryDetailsActivity"
+                  android:label="People - Details">
+        </activity>
     </application>
 </manifest>

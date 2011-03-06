@@ -1,7 +1,6 @@
 package com.sjfc.fisherapp;
 
 import android.provider.BaseColumns;
-import com.sjfc.fisherapp.R;
 
 public final class FisherappDatabase {
 	

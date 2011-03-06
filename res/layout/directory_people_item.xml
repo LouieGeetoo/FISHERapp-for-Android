@@ -52,7 +52,7 @@
 				android:textColor="@android:color/black"
 				android:text="middle" />	
 		</LinearLayout>
-	<LinearLayout android:id="@+id/nameLine"
+	<LinearLayout android:id="@+id/titleLine"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:orientation="horizontal">

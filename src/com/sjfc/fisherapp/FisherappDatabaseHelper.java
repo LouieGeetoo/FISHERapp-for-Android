@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.sjfc.fisherapp.R;
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 class FisherappDatabaseHelper extends SQLiteOpenHelper {

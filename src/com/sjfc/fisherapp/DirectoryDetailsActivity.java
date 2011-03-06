@@ -1,36 +1,30 @@
 package com.sjfc.fisherapp;
 
-import java.net.URL;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 public class DirectoryDetailsActivity extends DirectoryActivity {
 	
-	private SimpleCursorAdapter adapter;
+	public static final String KEY_PERSON_ID = "com.sjfc.fisherapp.person_id";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
+    	long personId = getIntent().getLongExtra(KEY_PERSON_ID, 0);
+    	Log.d("Fisherapp", "Got id " + personId);
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.directory_details);
 
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
-        txtTitle.setText(R.string.directory);
+        txtTitle.setText(R.string.directory_details);
         TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
         txtUpdateStatus.setText(R.string.blank);
 
@@ -38,92 +32,77 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		// TODO: Return to Directory list
+        		/** TODO: Go back to main menu? */
         	}
         });
         
-        fillPeopleListView();
-        
-        
+        fillPeopleDetailsView(personId);
     }
     
-    private void fillPeopleListView() {
-        // Populate the ListView
-    	SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-    	queryBuilder.setTables(
-    		directoryPeople.PEOPLE_TABLE
-    	);
+    private void fillPeopleDetailsView(long personId) {
+    	Log.d("Fisherapp", "fillDetails method: personId = " + personId);
+    	Cursor c = mDB.query(directoryPeople.PEOPLE_TABLE, null, "_id=" + personId, null, null, null, null);
+    	startManagingCursor(c);
     	
-    	String asColumnsToReturn[] = { 
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.LAST_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.FIRST_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.MIDDLE_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.JOB_TITLE + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople._ID
-    	};
+    	Log.d("Fisherapp", "Cursor created");
     	
-    	mCursor = queryBuilder.query(mDB, asColumnsToReturn, null, null,
-    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
-    	
-    	updateFirstSyncMessage();
-    	
-    	startManagingCursor(mCursor);
-    	
-    	adapter = new SimpleCursorAdapter(this,
-    			R.layout.directory_people_item, mCursor,
-    			new String[]{
-    				directoryPeople.LAST_NAME,
-    				directoryPeople.FIRST_NAME,
-    				directoryPeople.MIDDLE_NAME,
-    				directoryPeople.JOB_TITLE},
-    			new int[]{
-    				R.id.txtLastName,
-    				R.id.txtFirstName,
-    				R.id.txtMiddle,
-    				R.id.txtTitle} 
-    	); 
-    	
-    	ListView av = (ListView)findViewById(R.id.listPeople);
-    	av.setAdapter(adapter);
-    }
-    
-
-    
-    private void updateFirstSyncMessage() {
-    	/*
-    	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
-    	if (mCursor.getCount() == 0) {
-    		firstSyncMessage.setVisibility(View.VISIBLE);
-    	} else {
-    		firstSyncMessage.setVisibility(View.GONE);
+    	/** Fill in the details fields one-by-one */
+    	if (c.moveToFirst()) {
+    		for (int i = 0; i < c.getColumnCount(); i++) {
+        		//Log.d("Fisherapp", "Cursor: " + c.getColumnName(i) + " " + c.getString(i));
+        		updateAppropriateView(c.getColumnName(i), c.getString(i));
+    		}
     	}
-    	*/
     }
     
-	public boolean isPeopleField(String tag) {
-		if (tag.compareTo(directoryPeople.LAST_NAME) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.FIRST_NAME) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.MIDDLE_NAME) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.FAC_STAFF_DIR) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.JOB_TITLE) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.DEPARTMENT) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.OFFICE) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.PHONE_NUMBER) == 0)
-			return true;
-		if (tag.compareTo(directoryPeople.EMAIL) == 0)
-			return true;
-		return false;
-	}
+    private void updateAppropriateView(String columnName, String data) {
+    	Log.d("Fisherapp", columnName + ": " + data);
+    	if (data == null)
+    		data = "";
+		if (columnName.compareTo(directoryPeople.LAST_NAME) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtLastName);
+			t.setText(data);
+		}
+		if (columnName.compareTo(directoryPeople.FIRST_NAME) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtFirstName);
+			t.setText(data + " ");
+		}
+		if (columnName.compareTo(directoryPeople.MIDDLE_NAME) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtMiddle);
+			t.setText(data + " ");
+		}
+		if (columnName.compareTo(directoryPeople.FAC_STAFF_DIR) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtGroup);
+			t.setText(data);
+		}
+		if (columnName.compareTo(directoryPeople.JOB_TITLE) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtJobTitle);
+			t.setText(data);
+		}
+		if (columnName.compareTo(directoryPeople.DEPARTMENT) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtDepartment);
+			t.setText(data);
+		}
+		if (columnName.compareTo(directoryPeople.OFFICE) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtOffice);
+			t.setText(data);
+		}
+		if (columnName.compareTo(directoryPeople.PHONE_NUMBER) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtPhone);
+			t.setText(data);
+		}
+		if (columnName.compareTo(directoryPeople.EMAIL) == 0) {
+			Log.d("Fisherapp", columnName + ": " + data);
+			TextView t = (TextView)findViewById(R.id.txtEmail);
+			t.setText(data);
+		}
+    }
 }

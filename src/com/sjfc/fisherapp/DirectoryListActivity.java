@@ -7,35 +7,47 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
+/** F.1 DirectoryListActivity */
 public class DirectoryListActivity extends DirectoryActivity {
 	
+	/** F.1.V global variables */
 	public static final String PREFS_NAME = "FisherappPrefs";
-	public final Handler mHandler = new Handler();
-	private SimpleCursorAdapter adapter;
-	boolean syncing = false;
+	public static final String PREF_SYNCING = "isSyncing";
+	public static final String PREF_LAST_SYNCED = "lastSynced";
+	public static final String PREF_DIRECTORY_URL = "directoryUrl";
+	public static final String DEFAULT_DIRECTORY_URL = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
+
+	public static String directoryUrl;
+	public static final Handler mHandler = new Handler();
+	private static SimpleCursorAdapter adapter;
+	private static boolean syncing = false;
 	
-	
+	/** F.1.1 onCreate */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        // Restore preferences
+        /** Restore preferences */
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-    	SharedPreferences.Editor prefsEditor = settings.edit();
-        syncing = settings.getBoolean("isSyncing", false);
+    	//SharedPreferences.Editor prefsEditor = settings.edit();
+        syncing = settings.getBoolean(PREF_SYNCING, false);
+        directoryUrl = settings.getString(PREF_DIRECTORY_URL, DEFAULT_DIRECTORY_URL);
         
         setContentView(R.layout.directory_list);
 
@@ -43,45 +55,50 @@ public class DirectoryListActivity extends DirectoryActivity {
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
         txtTitle.setText(R.string.directory);
         TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-        txtUpdateStatus.setText(R.string.blank);
+        if (syncing) {
+        	txtUpdateStatus.setText(R.string.syncing);
+        } else {
+        	txtUpdateStatus.setText(R.string.blank);
+        }
 
-    	/** Listen for logo push */
+    	/** Listen for logo click -> manual sync */
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		// Refresh!
+        		/** Refresh! */
         		startXMLParseThread();
         	}
         });
         
         fillPeopleListView();
         
-        if (timeForSync()) {
+        if (isTimeForSync()) {
         	startXMLParseThread();
         }
 
     }
     
-    private boolean timeForSync() {
-    	// if NOW is at least 1 week since LASTSYNCDATE, return true; else return false
+    /** F.1.2 isTimeForSync */
+    private boolean isTimeForSync() {
     	Calendar cal = Calendar.getInstance();
     	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
     	int yearNow = cal.get(Calendar.YEAR);
-    	Log.d("Fisherapp", "Current date: Week " + weekNow + " of " + yearNow);
+    	Log.d("Fisherapp", "Currently it is Week " + weekNow + " of " + yearNow);
     	String thisWeek = yearNow + "." + weekNow;
     	
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String lastSync = settings.getString("lastSynced", "0.0");
+        String lastSync = settings.getString(PREF_LAST_SYNCED, "0.0");
     	
         if (thisWeek.compareTo(lastSync) != 0) {
-        	Log.d("Fisherapp", "Time for sync. Now: " + thisWeek + ", Last Sync: " + lastSync);
+        	Log.d("Fisherapp", "Time for sync. This week is: " + thisWeek + ", Last Sync: " + lastSync);
         	return true;
         } else {
-        	Log.d("Fisherapp", "No sync needed. Now: " + thisWeek + ", Last Sync: " + lastSync);
+        	Log.d("Fisherapp", "No sync needed. This week is: " + thisWeek + ", Last Sync: " + lastSync);
         	return false;
         }
     }
     
+    /** F.1.3 fillPeopleListView */
     private void fillPeopleListView() {
         // Populate the ListView
     	SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
@@ -125,8 +142,24 @@ public class DirectoryListActivity extends DirectoryActivity {
     	
     	ListView av = (ListView)findViewById(R.id.listPeople);
     	av.setAdapter(adapter);
+    	
+    	/** Listen for list item click */
+        av.setOnItemClickListener(
+        		new AdapterView.OnItemClickListener() {
+    	    		public void onItemClick(AdapterView<?> parent, View view,
+    						int position, long id) {	    			
+    	    			Toast.makeText(getApplicationContext(),
+    	    					"Clicked id = " + id, Toast.LENGTH_SHORT).show();
+    	    			
+    	    			Intent intent = new Intent(DirectoryListActivity.this,
+    	    					DirectoryDetailsActivity.class);
+    	    			intent.putExtra(DirectoryDetailsActivity.KEY_PERSON_ID, id);
+    	    			startActivity(intent);
+    				}
+        		});
     }
     
+    /** F.1.4 startXMLParseThread */
     private void startXMLParseThread() {
     	if (!syncing) {
     		TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
@@ -142,7 +175,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         					syncing = true;
         					SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         					SharedPreferences.Editor prefsEditor = settings.edit();
-							prefsEditor.putBoolean("isSyncing", syncing);
+							prefsEditor.putBoolean(PREF_SYNCING, syncing);
 							prefsEditor.commit();
             				
         		    		mDB.delete(directoryPeople.TEMP_TABLE, null, null);
@@ -150,8 +183,8 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
         		    	    XmlPullParser parser = parserCreator.newPullParser();
         		    	    
-        		    	    String XMLaddress = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
-        	    	        URL feed = new URL(XMLaddress);
+        		    	    //String XMLaddress = DEFAULT_DIRECTORY_URL;
+        	    	        URL feed = new URL(directoryUrl);
         		    	    parser.setInput(feed.openStream(), null);
         		    	    
         		    	    ContentValues entry = new ContentValues();
@@ -178,7 +211,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    }
         		    	    Log.d("Fisherapp", "Finished parsing People XML.");
         		    	    
-        		    	 // Copy temp table to permanent table
+        		    	    /** Copy temp table to permanent table */
         		        	mDB.delete(directoryPeople.PEOPLE_TABLE, null, null);
         		        	
         		        	String copyQuery = "INSERT INTO " + directoryPeople.PEOPLE_TABLE
@@ -186,7 +219,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	
         		        	mDB.execSQL(copyQuery);
         		        	
-        		        	// Delete contents of temp table
+        		        	/** Delete contents of temp table */
         		        	mDB.delete(directoryPeople.TEMP_TABLE, null, null);
         		        	Log.d("Fisherapp", "Data copied to table_people.");
         		        	success = true;
@@ -198,8 +231,8 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	Log.d("Fisherapp", "Sync finished: Week " + weekNow + " of " + yearNow);
         		        	String thisWeek = yearNow + "." + weekNow;
         		        	
-        		        	prefsEditor.putString("lastSynced", thisWeek);
-        		        	prefsEditor.putBoolean("isSyncing", syncing);
+        		        	prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
+        		        	prefsEditor.putBoolean(PREF_SYNCING, syncing);
 							prefsEditor.commit();
         				}
     		        	
@@ -235,6 +268,7 @@ public class DirectoryListActivity extends DirectoryActivity {
     	}    	
     }
     
+    /** F.1.5 updateFirstSyncMessage */
     private void updateFirstSyncMessage() {
     	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
     	if (mCursor.getCount() == 0) {
@@ -244,6 +278,7 @@ public class DirectoryListActivity extends DirectoryActivity {
     	}
     }
     
+    /** F.1.6 isPeopleField */
 	public boolean isPeopleField(String tag) {
 		if (tag.compareTo(directoryPeople.LAST_NAME) == 0)
 			return true;
