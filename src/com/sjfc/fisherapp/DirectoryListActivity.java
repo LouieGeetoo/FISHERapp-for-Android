@@ -54,18 +54,23 @@ public class DirectoryListActivity extends DirectoryActivity {
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
         txtTitle.setText(R.string.directory);
-        TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-        if (syncing) {
-        	txtUpdateStatus.setText(R.string.syncing);
-        } else {
-        	txtUpdateStatus.setText(R.string.blank);
-        }
+        //TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
+        //if (syncing) {
+        //	txtUpdateStatus.setText(R.string.syncing);
+        //} else {
+        //	txtUpdateStatus.setText(R.string.blank);
+        //}
 
     	/** Listen for logo click -> manual sync */
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		/** Refresh! */
+        		/** Flush sync status and Sync! */
+				syncing = false;
+				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+				SharedPreferences.Editor prefsEditor = settings.edit();
+				prefsEditor.putBoolean(PREF_SYNCING, syncing);
+				prefsEditor.commit();
         		startXMLParseThread();
         	}
         });
@@ -142,14 +147,15 @@ public class DirectoryListActivity extends DirectoryActivity {
     	
     	ListView av = (ListView)findViewById(R.id.listPeople);
     	av.setAdapter(adapter);
+    	av.setFastScrollEnabled(true);
     	
     	/** Listen for list item click */
         av.setOnItemClickListener(
         		new AdapterView.OnItemClickListener() {
     	    		public void onItemClick(AdapterView<?> parent, View view,
     						int position, long id) {	    			
-    	    			Toast.makeText(getApplicationContext(),
-    	    					"Clicked id = " + id, Toast.LENGTH_SHORT).show();
+    	    			//Toast.makeText(getApplicationContext(),
+    	    			//		"Clicked id = " + id, Toast.LENGTH_SHORT).show();
     	    			
     	    			Intent intent = new Intent(DirectoryListActivity.this,
     	    					DirectoryDetailsActivity.class);
@@ -162,8 +168,10 @@ public class DirectoryListActivity extends DirectoryActivity {
     /** F.1.4 startXMLParseThread */
     private void startXMLParseThread() {
     	if (!syncing) {
-    		TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-            txtUpdateStatus.setText(R.string.syncing);
+    		//TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
+            //txtUpdateStatus.setText(R.string.syncing);
+            Toast.makeText(getApplicationContext(),
+					"Syncing...", Toast.LENGTH_SHORT).show();
             
             new Thread () {
         		
@@ -198,7 +206,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    		if (isPeopleField(tag)) {
         		    	    			parserEvent = parser.next();
         		    	    			value =  parser.getText();
-        		    		    		entry.put(tag, value);
+        		    		    		entry.put(tag, value.replaceAll("\n", ""));
         		    		    		//Log.d("Fisherapp", "Parsed " + tag + ": " + value);
         		    	    		}
         		    	    	}
@@ -235,25 +243,28 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	prefsEditor.putBoolean(PREF_SYNCING, syncing);
 							prefsEditor.commit();
         				}
-    		        	
         			} catch (Exception e) {
-        				Log.e("Fisherapp", "XML Parse Error: " + e.toString());
+        				Log.e("Fisherapp", "XML Parse Error: (orientation change?)" + e.toString());
         				success = false;
         				syncing = false;
         				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         				SharedPreferences.Editor prefsEditor = settings.edit();
-        				prefsEditor.putBoolean("isSyncing", syncing);
+        				prefsEditor.putBoolean(PREF_SYNCING, syncing);
 						prefsEditor.commit();
         			}
         			
         			mHandler.post(new Runnable() {
         				public void run() {
         					if (!syncing) {
-        						TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
+        						//TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
             		        	if (success) {
-            			        	txtUpdateStatus.setText(R.string.synced);
+            			        	//txtUpdateStatus.setText(R.string.synced);
+            			        	Toast.makeText(getApplicationContext(),
+            								"Synced!", Toast.LENGTH_SHORT).show();
             		        	} else {
-            		            	txtUpdateStatus.setText(R.string.sync_failed);
+            		            	//txtUpdateStatus.setText(R.string.sync_failed);
+            		            	//Toast.makeText(getApplicationContext(),
+            		    			//		"Sync failed. Do you have a connection?", Toast.LENGTH_LONG).show();
             		        	}
             		        	// Refresh the ListView
             		        	adapter.getCursor().requery();
@@ -280,23 +291,23 @@ public class DirectoryListActivity extends DirectoryActivity {
     
     /** F.1.6 isPeopleField */
 	public boolean isPeopleField(String tag) {
-		if (tag.compareTo(directoryPeople.LAST_NAME) == 0)
+		if (tag.equals(directoryPeople.LAST_NAME))
 			return true;
-		if (tag.compareTo(directoryPeople.FIRST_NAME) == 0)
+		if (tag.equals(directoryPeople.FIRST_NAME))
 			return true;
-		if (tag.compareTo(directoryPeople.MIDDLE_NAME) == 0)
+		if (tag.equals(directoryPeople.MIDDLE_NAME))
 			return true;
-		if (tag.compareTo(directoryPeople.FAC_STAFF_DIR) == 0)
+		if (tag.equals(directoryPeople.FAC_STAFF_DIR))
 			return true;
-		if (tag.compareTo(directoryPeople.JOB_TITLE) == 0)
+		if (tag.equals(directoryPeople.JOB_TITLE))
 			return true;
-		if (tag.compareTo(directoryPeople.DEPARTMENT) == 0)
+		if (tag.equals(directoryPeople.DEPARTMENT))
 			return true;
-		if (tag.compareTo(directoryPeople.OFFICE) == 0)
+		if (tag.equals(directoryPeople.OFFICE))
 			return true;
-		if (tag.compareTo(directoryPeople.PHONE_NUMBER) == 0)
+		if (tag.equals(directoryPeople.PHONE_NUMBER))
 			return true;
-		if (tag.compareTo(directoryPeople.EMAIL) == 0)
+		if (tag.equals(directoryPeople.EMAIL))
 			return true;
 		return false;
 	}

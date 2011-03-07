@@ -62,6 +62,6 @@
 			android:layout_height="wrap_content"
 			android:textSize="16sp"
 			android:textColor="@android:color/black"
-			android:text="title"/>
+			android:text="title" android:ellipsize="marquee"/>
 	</LinearLayout>
 </LinearLayout>

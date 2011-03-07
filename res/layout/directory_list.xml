@@ -26,14 +26,14 @@
 			android:layout_gravity="center_horizontal"
 			style="@android:style/Widget.ProgressBar.Large.Inverse" />
 	</LinearLayout>
+	<EditText android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type a name..."
+        android:maxLines="1" android:inputType="textFilter|textCapWords" android:id="@+id/search_box"/>
 	<ListView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/listPeople"
 		android:divider="@android:drawable/divider_horizontal_dark"
-		android:isScrollContainer="true"
-		android:headerDividersEnabled="true"
-		android:scrollbarAlwaysDrawVerticalTrack="true"
-		android:scrollbars="vertical"
 		android:cacheColorHint="@android:color/white" />
 </LinearLayout>

@@ -1,6 +1,8 @@
 package com.sjfc.fisherapp;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,50 +58,74 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
     }
     
     private void updateAppropriateView(String columnName, String data) {
-    	Log.d("Fisherapp", columnName + ": " + data);
+    	//Log.d("Fisherapp", columnName + ": " + data);
     	if (data == null)
     		data = "";
-		if (columnName.compareTo(directoryPeople.LAST_NAME) == 0) {
+		if (columnName.equals(directoryPeople.LAST_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtLastName);
 			t.setText(data);
 		}
-		if (columnName.compareTo(directoryPeople.FIRST_NAME) == 0) {
+		if (columnName.equals(directoryPeople.FIRST_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtFirstName);
-			t.setText(data + " ");
+			if(data.equals("")) {
+				t.setText(data);
+			} else {
+				t.setText(data + " ");
+			}
 		}
-		if (columnName.compareTo(directoryPeople.MIDDLE_NAME) == 0) {
+		if (columnName.equals(directoryPeople.MIDDLE_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtMiddle);
-			t.setText(data + " ");
+			if(data.equals("")) {
+				t.setText(data);
+			} else {
+				t.setText(data + " ");
+			}
 		}
-		if (columnName.compareTo(directoryPeople.FAC_STAFF_DIR) == 0) {
+		if (columnName.equals(directoryPeople.FAC_STAFF_DIR)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtGroup);
 			t.setText(data);
 		}
-		if (columnName.compareTo(directoryPeople.JOB_TITLE) == 0) {
+		if (columnName.equals(directoryPeople.JOB_TITLE)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtJobTitle);
 			t.setText(data);
 		}
-		if (columnName.compareTo(directoryPeople.DEPARTMENT) == 0) {
+		if (columnName.equals(directoryPeople.DEPARTMENT)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtDepartment);
 			t.setText(data);
 		}
-		if (columnName.compareTo(directoryPeople.OFFICE) == 0) {
+		if (columnName.equals(directoryPeople.OFFICE)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtOffice);
 			t.setText(data);
+			/*
+			t.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					String uri = "geo:43.117278648239015,-77.51273989677429";  
+					startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri))); 
+				}
+			});
+			*/
 		}
-		if (columnName.compareTo(directoryPeople.PHONE_NUMBER) == 0) {
+		if (columnName.equals(directoryPeople.PHONE_NUMBER)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtPhone);
-			t.setText(data);
+			
+			String number = "";
+			for (int i = 0; i < data.length(); i++) {
+				number = number + data.charAt(i);
+				if (i == 2 || i == 5) {
+					number = number + "-";
+				}
+			}
+			t.setText(number);
 		}
-		if (columnName.compareTo(directoryPeople.EMAIL) == 0) {
+		if (columnName.equals(directoryPeople.EMAIL)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtEmail);
 			t.setText(data);
