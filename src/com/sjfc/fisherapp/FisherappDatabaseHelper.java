@@ -56,4 +56,8 @@ class FisherappDatabaseHelper extends SQLiteOpenHelper {
 	public void onOpen(SQLiteDatabase db) {
 		super.onOpen(db);
 	}
+	
+	public void getAllSuggestedValues(String partialValue) {
+		
+	}
 }

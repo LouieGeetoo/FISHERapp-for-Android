@@ -9,12 +9,17 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -80,6 +85,26 @@ public class DirectoryListActivity extends DirectoryActivity {
         if (isTimeForSync()) {
         	startXMLParseThread();
         }
+        
+        EditText etext=(EditText)findViewById(R.id.search_box);
+        etext.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                    int after) {
+
+
+            }
+
+            public void afterTextChanged(Editable s) {
+                adapter.getFilter().filter(s.toString());
+                
+            }
+        });
 
     }
     
@@ -148,6 +173,44 @@ public class DirectoryListActivity extends DirectoryActivity {
     	ListView av = (ListView)findViewById(R.id.listPeople);
     	av.setAdapter(adapter);
     	av.setFastScrollEnabled(true);
+    	av.setTextFilterEnabled(true);
+    	
+    	adapter.setFilterQueryProvider(new FilterQueryProvider() {
+    		
+    		private Cursor c;
+    		
+            public Cursor runQuery(CharSequence constraint) {
+                String partialValue = constraint.toString();
+                
+                if (c != null) {
+                	c.close();
+                }
+                
+                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+                
+                String asColumnsToReturn[] = { 
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.LAST_NAME + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.FIRST_NAME + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.MIDDLE_NAME + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.JOB_TITLE + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople._ID
+            	};
+                
+                c = queryBuilder.query(mDB, asColumnsToReturn, directoryPeople.LAST_NAME + "=" + partialValue + "%", null,
+            			null, null, directoryPeople.DEFAULT_SORT_ORDER);
+                startManagingCursor(c);
+               
+                return c;
+            }
+        });
+    	
+        
+
     	
     	/** Listen for list item click */
         av.setOnItemClickListener(
