@@ -10,8 +10,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.view.View;
 
+/** F.D.3 DirectoryActivity */
 public class DirectoryActivity extends Activity {
 
+	/** F.D.3.V global variables */
 	protected FisherappDatabaseHelper mDatabase = null; 
 	protected Cursor mCursor = null;
 	protected SQLiteDatabase mDB = null;
@@ -22,7 +24,7 @@ public class DirectoryActivity extends Activity {
 	public static final String PREF_DIRECTORY_URL = "directoryUrl";
 	public static final String DEFAULT_DIRECTORY_URL = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
 
-		
+	/** F.D.3.1 onCreate() */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,6 +33,8 @@ public class DirectoryActivity extends Activity {
 		mDB = mDatabase.getWritableDatabase();
 		
 	}
+
+	/** F.D.3.2 onDestroy() */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -46,7 +50,8 @@ public class DirectoryActivity extends Activity {
 			mDatabase.close();
 		}
 	}
-	
+
+	/** F.D.3.3 getDirectoryList() */
 	public Cursor getDirectoryList (CharSequence constraint)  {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
     	queryBuilder.setTables(
