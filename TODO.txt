@@ -1,15 +1,17 @@
 TODO
 
 People
-- Add People entry details view
-- Add Search functionality to People
+- Prettify People entry details view
+- Add filter functionality to People
+- Add letter display to scroll
+- Add copy and share and contact functionality
 
 Web Links
 - Add Web Links activity
 
 Places
 - Add Places activity
-- Add Dining, Offices, SLC, and Library activities
+- Add Dining, Offices, SLC, Library, and Wellness Center info
 - Add Place details view (hours, contact info)
 
 

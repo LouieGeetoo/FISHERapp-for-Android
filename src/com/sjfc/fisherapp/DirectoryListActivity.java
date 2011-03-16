@@ -9,12 +9,17 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -27,12 +32,6 @@ import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 public class DirectoryListActivity extends DirectoryActivity {
 	
 	/** F.1.V global variables */
-	public static final String PREFS_NAME = "FisherappPrefs";
-	public static final String PREF_SYNCING = "isSyncing";
-	public static final String PREF_LAST_SYNCED = "lastSynced";
-	public static final String PREF_DIRECTORY_URL = "directoryUrl";
-	public static final String DEFAULT_DIRECTORY_URL = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
-
 	public static String directoryUrl;
 	public static final Handler mHandler = new Handler();
 	private static SimpleCursorAdapter adapter;
@@ -48,6 +47,8 @@ public class DirectoryListActivity extends DirectoryActivity {
     	//SharedPreferences.Editor prefsEditor = settings.edit();
         syncing = settings.getBoolean(PREF_SYNCING, false);
         directoryUrl = settings.getString(PREF_DIRECTORY_URL, DEFAULT_DIRECTORY_URL);
+        
+        Log.d("Fisherapp", "onCreate: syncing = " + syncing + " | directoryUrl = " + directoryUrl);
         
         setContentView(R.layout.directory_list);
 
@@ -77,9 +78,29 @@ public class DirectoryListActivity extends DirectoryActivity {
         
         fillPeopleListView();
         
-        if (isTimeForSync()) {
+        if (!syncing && isTimeForSync()) {
         	startXMLParseThread();
         }
+        
+        EditText etext=(EditText)findViewById(R.id.search_box);
+        etext.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                    int after) {
+
+
+            }
+
+            public void afterTextChanged(Editable s) {
+                adapter.getFilter().filter(s.toString());
+                
+            }
+        });
 
     }
     
@@ -148,6 +169,44 @@ public class DirectoryListActivity extends DirectoryActivity {
     	ListView av = (ListView)findViewById(R.id.listPeople);
     	av.setAdapter(adapter);
     	av.setFastScrollEnabled(true);
+    	av.setTextFilterEnabled(true);
+    	
+    	adapter.setFilterQueryProvider(new FilterQueryProvider() {
+    		
+    		private Cursor c;
+    		
+            public Cursor runQuery(CharSequence constraint) {
+                String partialValue = constraint.toString();
+                
+                if (c != null) {
+                	c.close();
+                }
+                
+                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+                
+                String asColumnsToReturn[] = { 
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.LAST_NAME + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.FIRST_NAME + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.MIDDLE_NAME + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople.JOB_TITLE + "," +
+            			directoryPeople.PEOPLE_TABLE + "."
+            			+ directoryPeople._ID
+            	};
+                
+                c = queryBuilder.query(mDB, asColumnsToReturn, directoryPeople.LAST_NAME + "=" + partialValue + "%", null,
+            			null, null, directoryPeople.DEFAULT_SORT_ORDER);
+                startManagingCursor(c);
+               
+                return c;
+            }
+        });
+    	
+        
+
     	
     	/** Listen for list item click */
         av.setOnItemClickListener(
@@ -199,6 +258,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    int parserEvent = parser.getEventType();
         		    	    String tag = "";
         		    	    String value = "";
+        		    	    int entryCount = 0;
         		    	    
         		    	    while (parserEvent != XmlPullParser.END_DOCUMENT) {
         		    	    	if(parserEvent == XmlPullParser.START_TAG) {
@@ -207,12 +267,13 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    			parserEvent = parser.next();
         		    	    			value =  parser.getText();
         		    		    		entry.put(tag, value.replaceAll("\n", ""));
-        		    		    		//Log.d("Fisherapp", "Parsed " + tag + ": " + value);
+        		    		    		Log.d("Fisherapp", "Parsed " + tag + ": " + value);
         		    	    		}
         		    	    	}
         		    	    	if(parserEvent == XmlPullParser.END_TAG && parser.getName().compareTo("ROW") == 0) {
         		    	    		mDB.insert(directoryPeople.TEMP_TABLE, null, entry);
-        		    	    		Log.d("Fisherapp", "Entry added to table_temp.");
+        		    	    		entryCount++;
+        		    	    		Log.d("Fisherapp", "Entry " + entryCount + " added to table_temp.");
         		    				entry.clear();
         		    	    	}
         		    	     	parserEvent = parser.next();
