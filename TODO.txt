@@ -1,20 +1,18 @@
 TODO
 
 People
-- Prettify People entry details view
-- Add filter functionality to People
-- Add letter display to scroll
-- Add copy and share and contact functionality
+- Add filter functionality to People listview
+- Add letter display to scrolling
+- Add Copy, Share, and Add to Contacts functionality
+- Improve "first sync" display to include better explanation and an incremental progress bar
 
 Web Links
 - Add Web Links activity
 
+Emergency
+- Add Emergency activity with emergency contact and other information
+
 Places
 - Add Places activity
 - Add Dining, Offices, SLC, Library, and Wellness Center info
-- Add Place details view (hours, contact info)
-
-
-
-DONE:
-(People) Add progress dialog to show during initial sync only (2011-02-20)
+- Add Place details view (hours, contact info, location on Google Maps(?))
