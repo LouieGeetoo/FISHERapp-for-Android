@@ -13,39 +13,18 @@
 			android:layout_width="match_parent"
 	    	android:layout_height="wrap_content"
 	    	android:orientation="vertical" >
-			<LinearLayout android:id="@+id/nameLine"
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:orientation="horizontal">
-					<TextView
-						android:id="@+id/txtFirstName"
+				<TextView
+						android:id="@+id/txtFullName"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="26sp"
 						android:textStyle="bold"
 						android:textColor="@android:color/black"
-						android:text="First " />
-					<TextView
-						android:id="@+id/txtMiddle"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:textStyle="bold"
-						android:textSize="26sp"
-						android:textColor="@android:color/black"
-						android:text="M " />
-					<TextView
-						android:id="@+id/txtLastName"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:textStyle="bold"
-						android:textSize="26sp"
-						android:textColor="@android:color/black"
-						android:text="Last" />	
-				</LinearLayout>
+						android:text="Full N. Name" />
 				<TextView
 						android:id="@+id/txtJobTitle"
-						android:layout_width="wrap_content"
+						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
@@ -53,7 +32,7 @@
 						android:text="Job Title" />
 				<TextView
 						android:id="@+id/txtDepartment"
-						android:layout_width="wrap_content"
+						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
@@ -61,7 +40,7 @@
 						android:text="Department" />
 				<TextView
 						android:id="@+id/txtGroup"
-						android:layout_width="wrap_content"
+						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
@@ -69,7 +48,7 @@
 						android:text="Faculty" />
 				<TextView
 						android:id="@+id/txtOffice"
-						android:layout_width="wrap_content"
+						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
@@ -77,20 +56,22 @@
 						android:text="BASIL 010" />
 				<TextView
 						android:id="@+id/txtPhone"
-						android:layout_width="wrap_content"
+						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
 						android:textColor="@android:color/black"
-						android:text="5853858016" android:autoLink="phone"/>
+						android:text="5853858016"
+						android:autoLink="phone"/>
 				<TextView
 						android:id="@+id/txtEmail"
-						android:layout_width="wrap_content"
+						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
 						android:textColor="@android:color/black"
-						android:text="jpray@sjfc.edu" android:autoLink="email"/>
+						android:text="jpray@sjfc.edu"
+						android:autoLink="email"/>
 	    </LinearLayout>	
 	</ScrollView>
 </LinearLayout>

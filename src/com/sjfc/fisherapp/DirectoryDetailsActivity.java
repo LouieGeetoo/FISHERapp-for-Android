@@ -14,6 +14,10 @@ import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 public class DirectoryDetailsActivity extends DirectoryActivity {
 	
 	public static final String KEY_PERSON_ID = "com.sjfc.fisherapp.person_id";
+	private static String fullName = "";
+	private static String firstName = "";
+	private static String middle = "";
+	private static String lastName = "";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,31 +67,46 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
     		data = "";
 		if (columnName.equals(directoryPeople.LAST_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
-			TextView t = (TextView)findViewById(R.id.txtLastName);
-			t.setText(data);
+			TextView t = (TextView)findViewById(R.id.txtFullName);
+			lastName = data;
+			fullName = firstName + middle + lastName;
+			t.setText(fullName);
 		}
 		if (columnName.equals(directoryPeople.FIRST_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
-			TextView t = (TextView)findViewById(R.id.txtFirstName);
+			TextView t = (TextView)findViewById(R.id.txtFullName);
 			if(data.equals("")) {
-				t.setText(data);
+				firstName = "";
+				fullName = firstName + middle + lastName;
+				t.setText(fullName);
 			} else {
-				t.setText(data + " ");
+				firstName = data + " ";
+				fullName = firstName + middle + lastName;
+				t.setText(fullName);
 			}
 		}
 		if (columnName.equals(directoryPeople.MIDDLE_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
-			TextView t = (TextView)findViewById(R.id.txtMiddle);
+			TextView t = (TextView)findViewById(R.id.txtFullName);
 			if(data.equals("")) {
-				t.setText(data);
+				middle = "";
+				fullName = firstName + middle + lastName;
+				t.setText(fullName);
 			} else {
-				t.setText(data + " ");
+				middle = data + " ";
+				fullName = firstName + middle + lastName;
+				t.setText(fullName);
 			}
 		}
 		if (columnName.equals(directoryPeople.FAC_STAFF_DIR)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtGroup);
-			t.setText(data);
+			if(data.equals("FACULTY"))
+				t.setText("Faculty");
+			else if(data.equals("STAFF"))
+				t.setText("Staff");
+			else
+				t.setText(data);
 		}
 		if (columnName.equals(directoryPeople.JOB_TITLE)) {
 			Log.d("Fisherapp", columnName + ": " + data);

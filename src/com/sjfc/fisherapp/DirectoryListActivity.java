@@ -267,7 +267,6 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    			parserEvent = parser.next();
         		    	    			value =  parser.getText();
         		    		    		entry.put(tag, value.replaceAll("\n", ""));
-        		    		    		Log.d("Fisherapp", "Parsed " + tag + ": " + value);
         		    	    		}
         		    	    	}
         		    	    	if(parserEvent == XmlPullParser.END_TAG && parser.getName().compareTo("ROW") == 0) {
