@@ -76,10 +76,8 @@ public class DirectoryActivity extends Activity {
 	    	return queryBuilder.query(mDB, asColumnsToReturn, null, null,
 	    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
 	    }  else  {
-	        return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like '%'" + 
-	        	constraint.toString() + "'%'", null, null, null,
-	        	"CASE WHEN LAST_NAME like '" + constraint.toString() +
-	        	"%' THEN 0 ELSE 1 END, LAST_NAME");
+	        String value = "%"+constraint.toString()+"%";
+                return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? ", new String[]{value}, null, null, null);
 	    }
 	}
 
