@@ -270,6 +270,8 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	success = true;
         		        	syncing = false;
         		        	
+                                        hUpdateStatus.sendEmptyMessage(0);
+
         		        	Calendar cal = Calendar.getInstance();
         		        	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
         		        	int yearNow = cal.get(Calendar.YEAR);
@@ -308,7 +310,6 @@ public class DirectoryListActivity extends DirectoryActivity {
             		        	adapter.getCursor().requery();
             		        	Log.d("Fisherapp", "ListView Cursor refreshed.");
             		        	updateFirstSyncMessage();
-            		        	updateSyncIndicator(false);
         					}
         				}
         			});
