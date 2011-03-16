@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,6 +52,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         Log.d("Fisherapp", "onCreate: syncing = " + syncing + " | directoryUrl = " + directoryUrl);
         
         setContentView(R.layout.directory_list);
+        updateSyncIndicator(syncing);
 
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
@@ -67,12 +69,13 @@ public class DirectoryListActivity extends DirectoryActivity {
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
         		/** Flush sync status and Sync! */
-				syncing = false;
-				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-				SharedPreferences.Editor prefsEditor = settings.edit();
-				prefsEditor.putBoolean(PREF_SYNCING, syncing);
-				prefsEditor.commit();
-        		startXMLParseThread();
+				//syncing = false;
+				//SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+				//SharedPreferences.Editor prefsEditor = settings.edit();
+				//prefsEditor.putBoolean(PREF_SYNCING, syncing);
+				//prefsEditor.commit();
+        		if (!syncing)
+        			startXMLParseThread();
         	}
         });
         
@@ -81,26 +84,6 @@ public class DirectoryListActivity extends DirectoryActivity {
         if (!syncing && isTimeForSync()) {
         	startXMLParseThread();
         }
-        
-        EditText etext=(EditText)findViewById(R.id.search_box);
-        etext.addTextChangedListener(new TextWatcher() {
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-
-
-            }
-
-            public void afterTextChanged(Editable s) {
-                adapter.getFilter().filter(s.toString());
-                
-            }
-        });
 
     }
     
@@ -127,6 +110,8 @@ public class DirectoryListActivity extends DirectoryActivity {
     /** F.1.3 fillPeopleListView */
     private void fillPeopleListView() {
         // Populate the ListView
+    	
+    	/*
     	SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
     	queryBuilder.setTables(
     		directoryPeople.PEOPLE_TABLE
@@ -151,6 +136,9 @@ public class DirectoryListActivity extends DirectoryActivity {
     	updateFirstSyncMessage();
     	
     	startManagingCursor(mCursor);
+    	*/
+    	
+    	mCursor = getDirectoryList(null);
     	
     	adapter = new SimpleCursorAdapter(this,
     			R.layout.directory_people_item, mCursor,
@@ -171,42 +159,24 @@ public class DirectoryListActivity extends DirectoryActivity {
     	av.setFastScrollEnabled(true);
     	av.setTextFilterEnabled(true);
     	
-    	adapter.setFilterQueryProvider(new FilterQueryProvider() {
-    		
-    		private Cursor c;
-    		
-            public Cursor runQuery(CharSequence constraint) {
-                String partialValue = constraint.toString();
-                
-                if (c != null) {
-                	c.close();
-                }
-                
-                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-                
-                String asColumnsToReturn[] = { 
-            			directoryPeople.PEOPLE_TABLE + "."
-            			+ directoryPeople.LAST_NAME + "," +
-            			directoryPeople.PEOPLE_TABLE + "."
-            			+ directoryPeople.FIRST_NAME + "," +
-            			directoryPeople.PEOPLE_TABLE + "."
-            			+ directoryPeople.MIDDLE_NAME + "," +
-            			directoryPeople.PEOPLE_TABLE + "."
-            			+ directoryPeople.JOB_TITLE + "," +
-            			directoryPeople.PEOPLE_TABLE + "."
-            			+ directoryPeople._ID
-            	};
-                
-                c = queryBuilder.query(mDB, asColumnsToReturn, directoryPeople.LAST_NAME + "=" + partialValue + "%", null,
-            			null, null, directoryPeople.DEFAULT_SORT_ORDER);
-                startManagingCursor(c);
-               
-                return c;
+    	EditText etext=(EditText)findViewById(R.id.search_box);
+        etext.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void afterTextChanged(Editable s) {
+            	adapter.getFilter().filter(s.toString());
             }
         });
     	
-        
-
+    	adapter.setFilterQueryProvider(new FilterQueryProvider() {
+    		public Cursor runQuery(CharSequence constraint) {
+                return getDirectoryList(constraint);
+            }
+        });
     	
     	/** Listen for list item click */
         av.setOnItemClickListener(
@@ -230,16 +200,23 @@ public class DirectoryListActivity extends DirectoryActivity {
     		//TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
             //txtUpdateStatus.setText(R.string.syncing);
             Toast.makeText(getApplicationContext(),
-					"Syncing...", Toast.LENGTH_SHORT).show();
+					"Updating directory...", Toast.LENGTH_SHORT).show();
             
             new Thread () {
         		
         		boolean success = false;
         		
+        		Handler hUpdateStatus = new Handler(){
+        			public void handleMessage(Message msg) {
+        				updateSyncIndicator(syncing);
+        			}
+        			};
+        		
         		public void run() {
         			try {
         				if (!syncing) {
         					syncing = true;
+        					hUpdateStatus.sendEmptyMessage(0);
         					SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         					SharedPreferences.Editor prefsEditor = settings.edit();
 							prefsEditor.putBoolean(PREF_SYNCING, syncing);
@@ -307,12 +284,13 @@ public class DirectoryListActivity extends DirectoryActivity {
         				Log.e("Fisherapp", "XML Parse Error: (orientation change?)" + e.toString());
         				success = false;
         				syncing = false;
+        				hUpdateStatus.sendEmptyMessage(0);
         				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         				SharedPreferences.Editor prefsEditor = settings.edit();
         				prefsEditor.putBoolean(PREF_SYNCING, syncing);
 						prefsEditor.commit();
         			}
-        			
+
         			mHandler.post(new Runnable() {
         				public void run() {
         					if (!syncing) {
@@ -320,7 +298,7 @@ public class DirectoryListActivity extends DirectoryActivity {
             		        	if (success) {
             			        	//txtUpdateStatus.setText(R.string.synced);
             			        	Toast.makeText(getApplicationContext(),
-            								"Synced!", Toast.LENGTH_SHORT).show();
+            								"Directory updated!", Toast.LENGTH_SHORT).show();
             		        	} else {
             		            	//txtUpdateStatus.setText(R.string.sync_failed);
             		            	//Toast.makeText(getApplicationContext(),
@@ -328,9 +306,9 @@ public class DirectoryListActivity extends DirectoryActivity {
             		        	}
             		        	// Refresh the ListView
             		        	adapter.getCursor().requery();
-            		        	//adapter.notifyDataSetChanged();
             		        	Log.d("Fisherapp", "ListView Cursor refreshed.");
             		        	updateFirstSyncMessage();
+            		        	updateSyncIndicator(false);
         					}
         				}
         			});
@@ -342,10 +320,13 @@ public class DirectoryListActivity extends DirectoryActivity {
     /** F.1.5 updateFirstSyncMessage */
     private void updateFirstSyncMessage() {
     	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
+    	View filterBox = (View) findViewById(R.id.search_box);
     	if (mCursor.getCount() == 0) {
     		firstSyncMessage.setVisibility(View.VISIBLE);
+    		filterBox.setVisibility(View.GONE);
     	} else {
     		firstSyncMessage.setVisibility(View.GONE);
+    		filterBox.setVisibility(View.VISIBLE); //CHANGE TO VISIBLE
     	}
     }
     
@@ -371,4 +352,13 @@ public class DirectoryListActivity extends DirectoryActivity {
 			return true;
 		return false;
 	}
+	
+	void updateSyncIndicator(boolean visible) {
+    	View indicator = (View) findViewById(R.id.progSyncStatus);
+		int visibility = indicator.getVisibility();
+    	if(visible && visibility == View.GONE)
+    		indicator.setVisibility(View.VISIBLE);
+    	if (!visible && visibility == View.VISIBLE)
+    		indicator.setVisibility(View.GONE);
+    }
 }

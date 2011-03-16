@@ -1,10 +1,14 @@
 package com.sjfc.fisherapp;
 
+import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
+import android.view.View;
 
 public class DirectoryActivity extends Activity {
 
@@ -43,6 +47,35 @@ public class DirectoryActivity extends Activity {
 		}
 	}
 	
-	
+	public Cursor getDirectoryList (CharSequence constraint)  {
+		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+    	queryBuilder.setTables(
+    		directoryPeople.PEOPLE_TABLE
+    	);
+    	
+    	String asColumnsToReturn[] = { 
+    			directoryPeople.PEOPLE_TABLE + "."
+    			+ directoryPeople.LAST_NAME + "," +
+    			directoryPeople.PEOPLE_TABLE + "."
+    			+ directoryPeople.FIRST_NAME + "," +
+    			directoryPeople.PEOPLE_TABLE + "."
+    			+ directoryPeople.MIDDLE_NAME + "," +
+    			directoryPeople.PEOPLE_TABLE + "."
+    			+ directoryPeople.JOB_TITLE + "," +
+    			directoryPeople.PEOPLE_TABLE + "."
+    			+ directoryPeople._ID
+    	};
+    	
+	    if (constraint == null  ||  constraint.length () == 0)  {
+	        //  Return the full list
+	    	return queryBuilder.query(mDB, asColumnsToReturn, null, null,
+	    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
+	    }  else  {
+	        return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like '%'" + 
+	        	constraint.toString() + "'%'", null, null, null,
+	        	"CASE WHEN LAST_NAME like '" + constraint.toString() +
+	        	"%' THEN 0 ELSE 1 END, LAST_NAME");
+	    }
+	}
 
 }
