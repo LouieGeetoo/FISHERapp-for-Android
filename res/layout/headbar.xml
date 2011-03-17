@@ -18,11 +18,12 @@
         	android:paddingLeft="10dp"
         	android:clickable="true"
         	android:focusable="true" />
-        <ImageButton android:layout_alignParentRight="true"
+        <ProgressBar android:layout_alignParentRight="true"
         	android:layout_centerVertical="true"
-        	android:id="@+id/btnSearch"
+        	android:id="@+id/progSyncStatus"
         	android:src="@drawable/search_white"
-        	android:background="@drawable/bar_right_button"
-        	android:layout_width="40dp"
-        	android:layout_height="40dp" android:visibility="invisible"/>
+        	android:layout_width="30dp"
+        	android:layout_height="30dp"
+        	android:padding="5dp"
+        	android:visibility="gone"/>
  </RelativeLayout>
