@@ -109,36 +109,9 @@ public class DirectoryListActivity extends DirectoryActivity {
     
     /** F.D.1.3 fillPeopleListView */
     private void fillPeopleListView() {
-        // Populate the ListView
-    	
-    	/*
-    	SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-    	queryBuilder.setTables(
-    		directoryPeople.PEOPLE_TABLE
-    	);
-    	
-    	String asColumnsToReturn[] = { 
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.LAST_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.FIRST_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.MIDDLE_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.JOB_TITLE + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople._ID
-    	};
-    	
-    	mCursor = queryBuilder.query(mDB, asColumnsToReturn, null, null,
-    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
-    	
-    	updateFirstSyncMessage();
-    	
-    	startManagingCursor(mCursor);
-    	*/
-    	
-    	mCursor = getDirectoryList(null);
+        mCursor = getDirectoryList(null);
+        
+        startManagingCursor(mCursor);
     	
     	adapter = new SimpleCursorAdapter(this,
     			R.layout.directory_people_item, mCursor,
@@ -227,7 +200,6 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
         		    	    XmlPullParser parser = parserCreator.newPullParser();
         		    	    
-        		    	    //String XMLaddress = DEFAULT_DIRECTORY_URL;
         	    	        URL feed = new URL(directoryUrl);
         		    	    parser.setInput(feed.openStream(), null);
         		    	    

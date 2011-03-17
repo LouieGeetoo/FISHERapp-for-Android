@@ -29,7 +29,9 @@
 	<EditText android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="Type a name..."
-        android:maxLines="1" android:inputType="textFilter|textCapWords" android:id="@+id/search_box"/>
+        android:maxLines="1"
+        android:inputType="textFilter|textCapWords"
+        android:id="@+id/search_box"/>
 	<ListView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
