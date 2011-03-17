@@ -29,16 +29,16 @@ import android.widget.Toast;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
-/** F.1 DirectoryListActivity */
+/** F.D.1 DirectoryListActivity */
 public class DirectoryListActivity extends DirectoryActivity {
 	
-	/** F.1.V global variables */
+	/** F.D.1.V global variables */
 	public static String directoryUrl;
 	public static final Handler mHandler = new Handler();
 	private static SimpleCursorAdapter adapter;
 	private static boolean syncing = false;
 	
-	/** F.1.1 onCreate */
+	/** F.D.1.1 onCreate */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -87,7 +87,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 
     }
     
-    /** F.1.2 isTimeForSync */
+    /** F.D.1.2 isTimeForSync */
     private boolean isTimeForSync() {
     	Calendar cal = Calendar.getInstance();
     	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
@@ -107,7 +107,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         }
     }
     
-    /** F.1.3 fillPeopleListView */
+    /** F.D.1.3 fillPeopleListView */
     private void fillPeopleListView() {
         // Populate the ListView
     	
@@ -178,7 +178,7 @@ public class DirectoryListActivity extends DirectoryActivity {
             }
         });
     	
-    	/** Listen for list item click */
+    	/* Listen for list item click */
         av.setOnItemClickListener(
         		new AdapterView.OnItemClickListener() {
     	    		public void onItemClick(AdapterView<?> parent, View view,
@@ -194,7 +194,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		});
     }
     
-    /** F.1.4 startXMLParseThread */
+    /** F.D.1.4 startXMLParseThread */
     private void startXMLParseThread() {
     	if (!syncing) {
     		//TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
@@ -270,6 +270,8 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	success = true;
         		        	syncing = false;
         		        	
+                                        hUpdateStatus.sendEmptyMessage(0);
+
         		        	Calendar cal = Calendar.getInstance();
         		        	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
         		        	int yearNow = cal.get(Calendar.YEAR);
@@ -317,7 +319,7 @@ public class DirectoryListActivity extends DirectoryActivity {
     	}    	
     }
     
-    /** F.1.5 updateFirstSyncMessage */
+    /** F.D.1.5 updateFirstSyncMessage */
     private void updateFirstSyncMessage() {
     	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
     	View filterBox = (View) findViewById(R.id.search_box);
@@ -330,7 +332,7 @@ public class DirectoryListActivity extends DirectoryActivity {
     	}
     }
     
-    /** F.1.6 isPeopleField */
+    /** F.D.1.6 isPeopleField */
 	public boolean isPeopleField(String tag) {
 		if (tag.equals(directoryPeople.LAST_NAME))
 			return true;
@@ -353,6 +355,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 		return false;
 	}
 	
+    /** F.D.1.7 updateSyncIndicator */
 	void updateSyncIndicator(boolean visible) {
     	View indicator = (View) findViewById(R.id.progSyncStatus);
 		int visibility = indicator.getVisibility();
