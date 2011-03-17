@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,10 +39,12 @@ public class DirectoryListActivity extends DirectoryActivity {
 	public static String directoryUrl;
 	public static final Handler mHandler = new Handler();
 	private static SimpleCursorAdapter adapter;
-	private static boolean syncing = false;
+	private static boolean syncing;
 	private static boolean masterSyncSetting;
 	private static boolean firstLaunch;
-	
+	private static int entryCount;
+    private ProgressBar mProgress;
+
 	/** F.D.1.1 onCreate */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,10 +52,10 @@ public class DirectoryListActivity extends DirectoryActivity {
         super.onCreate(savedInstanceState);
         /** Restore preferences */
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-    	//SharedPreferences.Editor prefsEditor = settings.edit();
         syncing = settings.getBoolean(PREF_SYNCING, false);
         directoryUrl = settings.getString(PREF_DIRECTORY_URL, DEFAULT_DIRECTORY_URL);
         firstLaunch = settings.getBoolean(PREF_FIRST_LAUNCH, true);
+        entryCount = settings.getInt(PREF_ENTRY_COUNT, 634);
         
         /* Check whether the user has system-wide background syncing enabled */
         ConnectivityManager mgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -67,6 +70,9 @@ public class DirectoryListActivity extends DirectoryActivity {
         setContentView(R.layout.directory_list);
         updateSyncIndicator(syncing);
         updateFirstSyncMessage(firstLaunch);
+        
+        mProgress = (ProgressBar) findViewById(R.id.progressBar);
+        mProgress.setMax(entryCount);
 
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
@@ -91,8 +97,6 @@ public class DirectoryListActivity extends DirectoryActivity {
             	startXMLParseThread();
             }
         }
-        
-
     }
     
     /** F.D.1.2 isTimeForSync */
@@ -189,6 +193,12 @@ public class DirectoryListActivity extends DirectoryActivity {
         			}
         			};
         			
+    			Handler hUpdateProgressBar = new Handler(){
+        			public void handleMessage(Message msg) {
+        				mProgress.setProgress(entryCount);
+        			}
+        			};
+        			
     			Handler hNotifySyncFailed = new Handler(){
         			public void handleMessage(Message msg) {
         				Toast.makeText(getApplicationContext(),
@@ -218,7 +228,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    int parserEvent = parser.getEventType();
         		    	    String tag = "";
         		    	    String value = "";
-        		    	    int entryCount = 0;
+        		    	    entryCount = 0;
         		    	    
         		    	    while (parserEvent != XmlPullParser.END_DOCUMENT) {
         		    	    	if(parserEvent == XmlPullParser.START_TAG) {
@@ -233,6 +243,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    		mDB.insert(directoryPeople.TEMP_TABLE, null, entry);
         		    	    		entryCount++;
         		    	    		Log.d("Fisherapp", "Entry " + entryCount + " added to table_temp.");
+        		    	    		hUpdateProgressBar.sendEmptyMessage(0);
         		    				entry.clear();
         		    	    	}
         		    	     	parserEvent = parser.next();
@@ -265,6 +276,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
         		        	prefsEditor.putBoolean(PREF_SYNCING, syncing);
         		        	prefsEditor.putBoolean(PREF_FIRST_LAUNCH, firstLaunch);
+        		        	prefsEditor.putInt(PREF_ENTRY_COUNT, entryCount);
 							prefsEditor.commit();
         				}
         			} catch (Exception e) {
@@ -303,10 +315,13 @@ public class DirectoryListActivity extends DirectoryActivity {
     /** F.D.1.5 updateFirstSyncMessage */
     private void updateFirstSyncMessage(boolean first) {
     	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
+    	View filterBox = (View) findViewById(R.id.search_box);
     	if (first) {
     		firstSyncMessage.setVisibility(View.VISIBLE);
+    		filterBox.setVisibility(View.GONE);
     	} else {
     		firstSyncMessage.setVisibility(View.GONE);
+    		filterBox.setVisibility(View.VISIBLE);
     	}
     }
     
@@ -342,4 +357,5 @@ public class DirectoryListActivity extends DirectoryActivity {
     	if (!visible && visibility == View.VISIBLE)
     		indicator.setVisibility(View.GONE);
     }
+	
 }

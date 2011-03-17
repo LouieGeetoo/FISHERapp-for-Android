@@ -22,6 +22,7 @@ public class DirectoryActivity extends Activity {
 	public static final String PREF_FIRST_LAUNCH = "firstLaunch";
 	public static final String PREF_SYNCING = "isSyncing";
 	public static final String PREF_LAST_SYNCED = "lastSynced";
+	public static final String PREF_ENTRY_COUNT = "entryCount";
 	public static final String PREF_DIRECTORY_URL = "directoryUrl";
 	public static final String DEFAULT_DIRECTORY_URL = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
 
