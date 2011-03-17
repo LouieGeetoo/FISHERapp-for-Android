@@ -58,6 +58,12 @@ public class DirectoryListActivity extends DirectoryActivity {
         bgData = mgr.getBackgroundDataSetting();
         Log.d("Fisherapp", "bgData = " + bgData);
         
+        if(!bgData) {
+        	Toast.makeText(getApplicationContext(),
+    				"To sync, please enable Background Data under Settings > Accounts & sync.", Toast.LENGTH_LONG).show();
+        }
+        
+        
         Log.d("Fisherapp", "onCreate: syncing = " + syncing + " | directoryUrl = " + directoryUrl);
         
         setContentView(R.layout.directory_list);
@@ -153,10 +159,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         av.setOnItemClickListener(
         		new AdapterView.OnItemClickListener() {
     	    		public void onItemClick(AdapterView<?> parent, View view,
-    						int position, long id) {	    			
-    	    			//Toast.makeText(getApplicationContext(),
-    	    			//		"Clicked id = " + id, Toast.LENGTH_SHORT).show();
-    	    			
+    						int position, long id) {	    				
     	    			Intent intent = new Intent(DirectoryListActivity.this,
     	    					DirectoryDetailsActivity.class);
     	    			intent.putExtra(DirectoryDetailsActivity.KEY_PERSON_ID, id);
@@ -168,8 +171,6 @@ public class DirectoryListActivity extends DirectoryActivity {
     /** F.D.1.4 startXMLParseThread */
     private void startXMLParseThread() {
     	if (!syncing) {
-    		//TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-            //txtUpdateStatus.setText(R.string.syncing);
             Toast.makeText(getApplicationContext(),
 					"Updating directory...", Toast.LENGTH_SHORT).show();
             
@@ -269,17 +270,11 @@ public class DirectoryListActivity extends DirectoryActivity {
         			mHandler.post(new Runnable() {
         				public void run() {
         					if (!syncing) {
-        						//TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
             		        	if (success) {
-            			        	//txtUpdateStatus.setText(R.string.synced);
             			        	Toast.makeText(getApplicationContext(),
             								"Directory updated!", Toast.LENGTH_SHORT).show();
             		        	} else {
-            		            	//txtUpdateStatus.setText(R.string.sync_failed);
-            		            	//Toast.makeText(getApplicationContext(),
-            		    			//		"Sync failed. Do you have a connection?", Toast.LENGTH_LONG).show();
             		        	}
-            		        	// Refresh the ListView
             		        	adapter.getCursor().requery();
             		        	Log.d("Fisherapp", "ListView Cursor refreshed.");
             		        	hUpdateStatus.sendEmptyMessage(0);

@@ -78,7 +78,7 @@ public class DirectoryActivity extends Activity {
 	    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
 	    }  else  {
 	        String value = constraint.toString()+"%";
-                return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? OR FIRST_NAME like ?", new String[]{value,value}, null, null, null);
+                return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? OR FIRST_NAME like ? OR MIDDLE_NAME like ?", new String[]{value,value,value}, null, null, null);
 	    }
 	}
 }

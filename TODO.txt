@@ -1,10 +1,7 @@
 TODO
 
 People
-- Add filter functionality to People listview
-- Add letter display to scrolling
 - Add Copy, Share, and Add to Contacts functionality
-- Improve "first sync" display to include better explanation and an incremental progress bar
 
 Web Links
 - Add Web Links activity
