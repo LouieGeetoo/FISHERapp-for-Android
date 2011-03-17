@@ -6,6 +6,7 @@ import java.util.Calendar;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +39,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	public static final Handler mHandler = new Handler();
 	private static SimpleCursorAdapter adapter;
 	private static boolean syncing = false;
-	private static boolean bgData;
+	private static boolean masterSyncSetting;
 	private static boolean firstLaunch;
 	
 	/** F.D.1.1 onCreate */
@@ -55,16 +56,13 @@ public class DirectoryListActivity extends DirectoryActivity {
         
         /* Check whether the user has system-wide background syncing enabled */
         ConnectivityManager mgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        bgData = mgr.getBackgroundDataSetting();
-        Log.d("Fisherapp", "bgData = " + bgData);
-        
-        if(!bgData) {
-        	Toast.makeText(getApplicationContext(),
-    				"To sync, please enable Background Data under Settings > Accounts & sync.", Toast.LENGTH_LONG).show();
-        }
-        
-        
+        getContentResolver();
+		masterSyncSetting = ContentResolver.getMasterSyncAutomatically();
+		if(!mgr.getBackgroundDataSetting()) {
+			masterSyncSetting = false;
+		}
         Log.d("Fisherapp", "onCreate: syncing = " + syncing + " | directoryUrl = " + directoryUrl);
+        Log.d("Fisherapp", "masterSyncSetting = " + masterSyncSetting);
         
         setContentView(R.layout.directory_list);
         updateSyncIndicator(syncing);
@@ -84,10 +82,16 @@ public class DirectoryListActivity extends DirectoryActivity {
         });
         
         fillPeopleListView();
-        
-        if (!syncing && bgData && isTimeForSync()) {
-        	startXMLParseThread();
+        if(firstLaunch) {
+        	if (!syncing && isTimeForSync()) {
+            	startXMLParseThread();
+            }
+        } else if(masterSyncSetting) {
+        	if (!syncing && isTimeForSync()) {
+            	startXMLParseThread();
+            }
         }
+        
 
     }
     
