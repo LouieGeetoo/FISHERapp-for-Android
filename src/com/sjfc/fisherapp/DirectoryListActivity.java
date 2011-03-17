@@ -188,6 +188,13 @@ public class DirectoryListActivity extends DirectoryActivity {
         				updateFirstSyncMessage(firstLaunch);
         			}
         			};
+        			
+    			Handler hNotifySyncFailed = new Handler(){
+        			public void handleMessage(Message msg) {
+        				Toast.makeText(getApplicationContext(),
+        						"Sync failed. Is there a data connection?", Toast.LENGTH_LONG).show();
+        			}
+        			};
         		
         		public void run() {
         			try {
@@ -261,9 +268,12 @@ public class DirectoryListActivity extends DirectoryActivity {
 							prefsEditor.commit();
         				}
         			} catch (Exception e) {
-        				Log.e("Fisherapp", "XML Parse Error: (orientation change?)" + e.toString());
+        				Log.e("Fisherapp", "XML Parse Error: " + e.toString());
         				success = false;
         				syncing = false;
+        				if (firstLaunch) {
+        					hNotifySyncFailed.sendEmptyMessage(0);
+        				}
         				hUpdateStatus.sendEmptyMessage(0);
         				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         				SharedPreferences.Editor prefsEditor = settings.edit();
