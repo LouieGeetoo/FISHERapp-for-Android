@@ -19,6 +19,7 @@ public class DirectoryActivity extends Activity {
 	protected SQLiteDatabase mDB = null;
 	
 	public static final String PREFS_NAME = "FisherappPrefs";
+	public static final String PREF_FIRST_LAUNCH = "firstLaunch";
 	public static final String PREF_SYNCING = "isSyncing";
 	public static final String PREF_LAST_SYNCED = "lastSynced";
 	public static final String PREF_DIRECTORY_URL = "directoryUrl";
@@ -76,8 +77,8 @@ public class DirectoryActivity extends Activity {
 	    	return queryBuilder.query(mDB, asColumnsToReturn, null, null,
 	    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
 	    }  else  {
-	        String value = "%"+constraint.toString()+"%";
-                return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? ", new String[]{value}, null, null, null);
+	        String value = constraint.toString()+"%";
+                return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? OR FIRST_NAME like ?", new String[]{value,value}, null, null, null);
 	    }
 	}
 }

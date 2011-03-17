@@ -6,6 +6,12 @@
     android:background="@android:color/white">
     <include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
     <include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
+    <EditText android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/directory_filter_hint"
+        android:maxLines="1"
+        android:inputType="textFilter|textCapWords"
+        android:id="@+id/search_box"/>
 	<LinearLayout android:id="@+id/emptyBox"
 		android:orientation="vertical"
 		android:layout_height="wrap_content"
@@ -16,22 +22,10 @@
 	        android:layout_height="wrap_content"
 	        android:background="@android:color/white"
 	        android:textSize="20sp"
-	        android:textColor="@android:color/black"
 	        android:text="@string/first_sync_message"
 	        android:layout_width="wrap_content"
 	        android:layout_margin="20dp"/>
-		<ProgressBar android:id="@+id/ProgressBar01"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			style="@android:style/Widget.ProgressBar.Large.Inverse" />
 	</LinearLayout>
-	<EditText android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="Type a name..."
-        android:maxLines="1"
-        android:inputType="textFilter|textCapWords"
-        android:id="@+id/search_box"/>
 	<ListView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

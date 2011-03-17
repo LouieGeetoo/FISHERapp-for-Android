@@ -7,10 +7,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteQueryBuilder;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -37,6 +38,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 	public static final Handler mHandler = new Handler();
 	private static SimpleCursorAdapter adapter;
 	private static boolean syncing = false;
+	private static boolean bgData;
+	private static boolean firstLaunch;
 	
 	/** F.D.1.1 onCreate */
     @Override
@@ -48,32 +51,27 @@ public class DirectoryListActivity extends DirectoryActivity {
     	//SharedPreferences.Editor prefsEditor = settings.edit();
         syncing = settings.getBoolean(PREF_SYNCING, false);
         directoryUrl = settings.getString(PREF_DIRECTORY_URL, DEFAULT_DIRECTORY_URL);
+        firstLaunch = settings.getBoolean(PREF_FIRST_LAUNCH, true);
+        
+        /* Check whether the user has system-wide background syncing enabled */
+        ConnectivityManager mgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        bgData = mgr.getBackgroundDataSetting();
+        Log.d("Fisherapp", "bgData = " + bgData);
         
         Log.d("Fisherapp", "onCreate: syncing = " + syncing + " | directoryUrl = " + directoryUrl);
         
         setContentView(R.layout.directory_list);
         updateSyncIndicator(syncing);
+        updateFirstSyncMessage(firstLaunch);
 
         /** Set yellow bar title and status text */
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
         txtTitle.setText(R.string.directory);
-        //TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-        //if (syncing) {
-        //	txtUpdateStatus.setText(R.string.syncing);
-        //} else {
-        //	txtUpdateStatus.setText(R.string.blank);
-        //}
 
     	/** Listen for logo click -> manual sync */
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		/** Flush sync status and Sync! */
-				//syncing = false;
-				//SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-				//SharedPreferences.Editor prefsEditor = settings.edit();
-				//prefsEditor.putBoolean(PREF_SYNCING, syncing);
-				//prefsEditor.commit();
         		if (!syncing)
         			startXMLParseThread();
         	}
@@ -81,7 +79,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         
         fillPeopleListView();
         
-        if (!syncing && isTimeForSync()) {
+        if (!syncing && bgData && isTimeForSync()) {
         	startXMLParseThread();
         }
 
@@ -182,6 +180,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		Handler hUpdateStatus = new Handler(){
         			public void handleMessage(Message msg) {
         				updateSyncIndicator(syncing);
+        				updateFirstSyncMessage(firstLaunch);
         			}
         			};
         		
@@ -241,6 +240,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	Log.d("Fisherapp", "Data copied to table_people.");
         		        	success = true;
         		        	syncing = false;
+        		        	firstLaunch = false;
         		        	
                                         hUpdateStatus.sendEmptyMessage(0);
 
@@ -252,6 +252,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         		        	
         		        	prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
         		        	prefsEditor.putBoolean(PREF_SYNCING, syncing);
+        		        	prefsEditor.putBoolean(PREF_FIRST_LAUNCH, firstLaunch);
 							prefsEditor.commit();
         				}
         			} catch (Exception e) {
@@ -281,8 +282,7 @@ public class DirectoryListActivity extends DirectoryActivity {
             		        	// Refresh the ListView
             		        	adapter.getCursor().requery();
             		        	Log.d("Fisherapp", "ListView Cursor refreshed.");
-            		        	updateFirstSyncMessage();
-            		        	updateSyncIndicator(false);
+            		        	hUpdateStatus.sendEmptyMessage(0);
         					}
         				}
         			});
@@ -292,15 +292,12 @@ public class DirectoryListActivity extends DirectoryActivity {
     }
     
     /** F.D.1.5 updateFirstSyncMessage */
-    private void updateFirstSyncMessage() {
+    private void updateFirstSyncMessage(boolean first) {
     	View firstSyncMessage = (View) findViewById(R.id.emptyBox);
-    	View filterBox = (View) findViewById(R.id.search_box);
-    	if (mCursor.getCount() == 0) {
+    	if (first) {
     		firstSyncMessage.setVisibility(View.VISIBLE);
-    		filterBox.setVisibility(View.GONE);
     	} else {
     		firstSyncMessage.setVisibility(View.GONE);
-    		filterBox.setVisibility(View.VISIBLE); //CHANGE TO VISIBLE
     	}
     }
     

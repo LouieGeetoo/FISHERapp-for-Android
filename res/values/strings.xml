@@ -12,7 +12,8 @@
 <string name="sync_failed">Sync failed.</string>
 <string name="peopleurl">http://dl.dropbox.com/u/6648787/Projects/Fisherapp/directory/people.xml</string>
 <string name="waiting_to_sync">Waiting to sync...</string>
-<string name="first_sync_message">Please wait while the directory is synced for the first time. (It\'ll only take this long once, promise!)</string>
+<string name="first_sync_message">Please wait while the directory is synced for the first time.</string>
 <string name="blank"></string>
 <string name="directory_details">People - Details</string>
+<string name="directory_filter_hint">Start typing a name...</string>
 </resources>
