@@ -16,14 +16,12 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="20sp"
-				android:textStyle="bold"
 				android:textColor="@android:color/black"
 				android:text="lastname" />
 			<TextView
 				android:id="@+id/nameSpace1"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textStyle="bold"
 				android:textSize="20sp"
 				android:textColor="@android:color/black"
 				android:text=", " />
@@ -31,7 +29,6 @@
 				android:id="@+id/txtFirstName"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textStyle="bold"
 				android:textSize="20sp"
 				android:textColor="@android:color/black"
 				android:text="firstname" />
@@ -39,7 +36,6 @@
 				android:id="@+id/nameSpace2"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textStyle="bold"
 				android:textSize="20sp"
 				android:textColor="@android:color/black"
 				android:text=" " />
@@ -47,7 +43,6 @@
 				android:id="@+id/txtMiddle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textStyle="bold"
 				android:textSize="20sp"
 				android:textColor="@android:color/black"
 				android:text="middle" />	
@@ -61,7 +56,6 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textSize="16sp"
-			android:textColor="@android:color/black"
-			android:text="title" android:ellipsize="marquee"/>
+			android:text="title" android:ellipsize="marquee" android:textColor="@color/sub_gray"/>
 	</LinearLayout>
 </LinearLayout>
