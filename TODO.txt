@@ -1,5 +1,8 @@
 TODO
 
+BUGS
+- Two syncs in a row results in zero results from the XmlPullParser on the second sync, emptying the list
+
 Web Links
 - Add Web Links activity
 
