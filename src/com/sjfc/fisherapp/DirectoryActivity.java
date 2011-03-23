@@ -1,14 +1,13 @@
 package com.sjfc.fisherapp;
 
-import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
-import android.view.View;
+
+import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 /** F.D.3 DirectoryActivity */
 public class DirectoryActivity extends Activity {

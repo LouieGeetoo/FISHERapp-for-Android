@@ -19,6 +19,8 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -37,9 +39,11 @@ public class DirectoryListActivity extends DirectoryActivity {
 	
 	/** F.D.1.V global variables */
 	public static String directoryUrl;
-	public static final Handler mHandler = new Handler();
+	private static  Handler mHandler = new Handler();
+	private static Thread parseThread;
 	private static SimpleCursorAdapter adapter;
-	private static boolean syncing;
+	private static boolean syncing = false;
+	private static boolean cancelSync;
 	private static boolean masterSyncSetting;
 	private static boolean firstLaunch;
 	private static int entryCount;
@@ -52,6 +56,7 @@ public class DirectoryListActivity extends DirectoryActivity {
         super.onCreate(savedInstanceState);
         /** Restore preferences */
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+    	//SharedPreferences.Editor prefsEditor = settings.edit();
         syncing = settings.getBoolean(PREF_SYNCING, false);
         directoryUrl = settings.getString(PREF_DIRECTORY_URL, DEFAULT_DIRECTORY_URL);
         firstLaunch = settings.getBoolean(PREF_FIRST_LAUNCH, true);
@@ -60,7 +65,9 @@ public class DirectoryListActivity extends DirectoryActivity {
         /* Check whether the user has system-wide background syncing enabled */
         ConnectivityManager mgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         getContentResolver();
+        /* Check OS "Auto-sync" setting */
 		masterSyncSetting = ContentResolver.getMasterSyncAutomatically();
+		/* Check OS "Background data" setting */
 		if(!mgr.getBackgroundDataSetting()) {
 			masterSyncSetting = false;
 		}
@@ -78,25 +85,35 @@ public class DirectoryListActivity extends DirectoryActivity {
         TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
         txtTitle.setText(R.string.directory);
 
-    	/** Listen for logo click -> manual sync */
+    	/** Listen for logo click (for future "home menu" access) */
         ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
         fisherappLogo.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		if (!syncing)
-        			startXMLParseThread();
+
         	}
         });
         
         fillPeopleListView();
-        if(firstLaunch) {
-        	if (!syncing && isTimeForSync()) {
-            	startXMLParseThread();
-            }
-        } else if(masterSyncSetting) {
-        	if (!syncing && isTimeForSync()) {
-            	startXMLParseThread();
-            }
-        }
+        startSync(true);
+    }
+    
+    /** NEW METHOD startSync */
+    public void startSync(boolean auto) {
+    	if(!syncing) {
+    		if(auto) {
+        		if(firstLaunch) {
+                	if (isTimeForSync()) {
+                    	startXMLParseThread();
+                    }
+                } else if(masterSyncSetting) {
+                	if (isTimeForSync()) {
+                    	startXMLParseThread();
+                    }
+                }
+        	} else {
+        		startXMLParseThread();
+        	}
+    	}	
     }
     
     /** F.D.1.2 isTimeForSync */
@@ -182,7 +199,7 @@ public class DirectoryListActivity extends DirectoryActivity {
             Toast.makeText(getApplicationContext(),
 					"Updating directory...", Toast.LENGTH_SHORT).show();
             
-            new Thread () {
+            parseThread = new Thread () {
         		
         		boolean success = false;
         		
@@ -201,19 +218,31 @@ public class DirectoryListActivity extends DirectoryActivity {
         			
     			Handler hNotifySyncFailed = new Handler(){
         			public void handleMessage(Message msg) {
-        				Toast.makeText(getApplicationContext(),
+    					Toast.makeText(getApplicationContext(),
         						"Sync failed. Is there a data connection?", Toast.LENGTH_LONG).show();
         			}
         			};
+        			
+        			Handler hNotifySyncCancelled = new Handler(){
+            			public void handleMessage(Message msg) {
+        					Toast.makeText(getApplicationContext(),
+            						"Directory sync cancelled. (Press Home next time to let it run" +
+            						" in the background.)", Toast.LENGTH_LONG).show();            				
+            			}
+            			};
         		
         		public void run() {
         			try {
         				if (!syncing) {
         					syncing = true;
+        					cancelSync = false;
         					hUpdateStatus.sendEmptyMessage(0);
+        					
+        					if(!firstLaunch)
+        						sleep(5000);
+        					
         					SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         					SharedPreferences.Editor prefsEditor = settings.edit();
-							prefsEditor.putBoolean(PREF_SYNCING, syncing);
 							prefsEditor.commit();
             				
         		    		mDB.delete(directoryPeople.TEMP_TABLE, null, null);
@@ -231,6 +260,14 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    entryCount = 0;
         		    	    
         		    	    while (parserEvent != XmlPullParser.END_DOCUMENT) {
+        		    	    	if(interrupted()) {
+        		    	    		syncing = false;
+        		    	    		success = false;
+        		    	    		cancelSync = true;
+        		    	    		hNotifySyncCancelled.sendEmptyMessage(0);
+        		    	    		break;
+        		    	    	}
+        		    	    	
         		    	    	if(parserEvent == XmlPullParser.START_TAG) {
         		    	    		tag = parser.getName();
         		    	    		if (isPeopleField(tag)) {
@@ -248,36 +285,38 @@ public class DirectoryListActivity extends DirectoryActivity {
         		    	    	}
         		    	     	parserEvent = parser.next();
         		    	    }
-        		    	    Log.d("Fisherapp", "Finished parsing People XML.");
         		    	    
-        		    	    /** Copy temp table to permanent table */
-        		        	mDB.delete(directoryPeople.PEOPLE_TABLE, null, null);
-        		        	
-        		        	String copyQuery = "INSERT INTO " + directoryPeople.PEOPLE_TABLE
-        		        		+ " SELECT * FROM " + directoryPeople.TEMP_TABLE;
-        		        	
-        		        	mDB.execSQL(copyQuery);
-        		        	
-        		        	/** Delete contents of temp table */
-        		        	mDB.delete(directoryPeople.TEMP_TABLE, null, null);
-        		        	Log.d("Fisherapp", "Data copied to table_people.");
-        		        	success = true;
-        		        	syncing = false;
-        		        	firstLaunch = false;
-        		        	
-                                        hUpdateStatus.sendEmptyMessage(0);
+        		    	    if(!cancelSync) {
+        		    	    	Log.d("Fisherapp", "Finished parsing People XML.");
+            		    	    
+            		    	    /** Copy temp table to permanent table */
+            		        	mDB.delete(directoryPeople.PEOPLE_TABLE, null, null);
+            		        	
+            		        	String copyQuery = "INSERT INTO " + directoryPeople.PEOPLE_TABLE
+            		        		+ " SELECT * FROM " + directoryPeople.TEMP_TABLE;
+            		        	
+            		        	mDB.execSQL(copyQuery);
+            		        	
+            		        	/** Delete contents of temp table */
+            		        	mDB.delete(directoryPeople.TEMP_TABLE, null, null);
+            		        	Log.d("Fisherapp", "Data copied to table_people.");
+            		        	success = true;
+            		        	syncing = false;
+            		        	firstLaunch = false;
+            		        	
+                                hUpdateStatus.sendEmptyMessage(0);
 
-        		        	Calendar cal = Calendar.getInstance();
-        		        	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
-        		        	int yearNow = cal.get(Calendar.YEAR);
-        		        	Log.d("Fisherapp", "Sync finished: Week " + weekNow + " of " + yearNow);
-        		        	String thisWeek = yearNow + "." + weekNow;
-        		        	
-        		        	prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
-        		        	prefsEditor.putBoolean(PREF_SYNCING, syncing);
-        		        	prefsEditor.putBoolean(PREF_FIRST_LAUNCH, firstLaunch);
-        		        	prefsEditor.putInt(PREF_ENTRY_COUNT, entryCount);
-							prefsEditor.commit();
+            		        	Calendar cal = Calendar.getInstance();
+            		        	int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
+            		        	int yearNow = cal.get(Calendar.YEAR);
+            		        	Log.d("Fisherapp", "Sync finished: Week " + weekNow + " of " + yearNow);
+            		        	String thisWeek = yearNow + "." + weekNow;
+            		        	
+            		        	prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
+            		        	prefsEditor.putBoolean(PREF_FIRST_LAUNCH, firstLaunch);
+            		        	prefsEditor.putInt(PREF_ENTRY_COUNT, entryCount);
+    							prefsEditor.commit();
+        		    	    }
         				}
         			} catch (Exception e) {
         				Log.e("Fisherapp", "XML Parse Error: " + e.toString());
@@ -289,7 +328,6 @@ public class DirectoryListActivity extends DirectoryActivity {
         				hUpdateStatus.sendEmptyMessage(0);
         				SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         				SharedPreferences.Editor prefsEditor = settings.edit();
-        				prefsEditor.putBoolean(PREF_SYNCING, syncing);
 						prefsEditor.commit();
         			}
 
@@ -308,7 +346,8 @@ public class DirectoryListActivity extends DirectoryActivity {
         				}
         			});
         		}
-        	}.start();
+        	};
+        	parseThread.start();
     	}    	
     }
     
@@ -358,4 +397,51 @@ public class DirectoryListActivity extends DirectoryActivity {
     		indicator.setVisibility(View.GONE);
     }
 	
+	/** NEW METHOD onDestroy */
+	public void onDestroy() {
+		super.onDestroy();
+		parseThread.interrupt();
+	}
+
+	/** NEW METHOD onCreateOptionsMenu */
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		if(syncing && !firstLaunch) {
+			menu.add(0, 0, 0, "Cancel sync")
+				.setIcon(R.drawable.ic_menu_stop);
+		} else {
+			menu.add(0, 0, 0, "Sync now")
+				.setIcon(R.drawable.ic_menu_refresh);
+		}
+		return true;
+	}
+	
+	/** NEW METHOD onPrepareOptionsMenu */
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		menu.removeItem(0);
+		if(syncing && !firstLaunch) {
+			menu.add(0, 0, 0, "Cancel sync")
+				.setIcon(R.drawable.ic_menu_stop);
+		} else {
+			menu.add(0, 0, 0, "Sync now")
+				.setIcon(R.drawable.ic_menu_refresh);
+		}
+		return true;
+	}
+	
+	/** NEW METHOD onOptionsItemSelected */
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+			case 0:
+				if(syncing && !firstLaunch) {
+					parseThread.interrupt();
+				} else {
+					startSync(false);
+				}
+			default:
+				//invalidateOptionsMenu(); /* Needed for Android 3.0 (tablets) */
+				return true;
+		}
+	}
 }
