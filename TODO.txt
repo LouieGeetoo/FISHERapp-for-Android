@@ -1,8 +1,5 @@
 TODO
 
-People
-- Add Copy, Share, and Add to Contacts functionality
-
 Web Links
 - Add Web Links activity
 
@@ -12,4 +9,4 @@ Emergency
 Places
 - Add Places activity
 - Add Dining, Offices, SLC, Library, and Wellness Center info
-- Add Place details view (hours, contact info, location on Google Maps(?))
+- Add Place details view (hours, contact info, ...location on Google Maps(?))

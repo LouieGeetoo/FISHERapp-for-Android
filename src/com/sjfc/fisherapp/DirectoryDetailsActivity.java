@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Contacts;
-import android.provider.Contacts.Groups;
 import android.provider.Contacts.People;
 import android.util.Log;
 import android.view.Menu;
@@ -33,52 +32,52 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	private static String phoneNumber = "";
 	private static String emailAddress = "";
 	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-    	long personId = getIntent().getLongExtra(KEY_PERSON_ID, 0);
-    	Log.d("Fisherapp", "Got id " + personId);
-    	
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.directory_details);
+		long personId = getIntent().getLongExtra(KEY_PERSON_ID, 0);
+		Log.d("Fisherapp", "Got id " + personId);
+		
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.directory_details);
 
-        /** Set yellow bar title and status text */
-        TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
-        txtTitle.setText(R.string.directory_details);
-        TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-        txtUpdateStatus.setText(R.string.blank);
+		/** Set yellow bar title and status text */
+		TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
+		txtTitle.setText(R.string.directory_details);
+		TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
+		txtUpdateStatus.setText(R.string.blank);
 
-    	/** Listen for logo push */
-        ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
-        fisherappLogo.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-        		/** TODO: Go back to main menu? */
-        	}
-        });
-        
-        fillPeopleDetailsView(personId);
-    }
-    
-    private void fillPeopleDetailsView(long personId) {
-    	Log.d("Fisherapp", "fillDetails method: personId = " + personId);
-    	Cursor c = mDB.query(directoryPeople.PEOPLE_TABLE, null, "_id=" + personId, null, null, null, null);
-    	startManagingCursor(c);
-    	
-    	Log.d("Fisherapp", "Cursor created");
-    	
-    	/** Fill in the details fields one-by-one */
-    	if (c.moveToFirst()) {
-    		for (int i = 0; i < c.getColumnCount(); i++) {
-        		//Log.d("Fisherapp", "Cursor: " + c.getColumnName(i) + " " + c.getString(i));
-        		updateAppropriateView(c.getColumnName(i), c.getString(i));
-    		}
-    	}
-    }
-    
-    private void updateAppropriateView(String columnName, String data) {
-    	//Log.d("Fisherapp", columnName + ": " + data);
-    	if (data == null)
-    		data = "";
+		/** Listen for logo push */
+		ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
+		fisherappLogo.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				/** TODO: Go back to main menu? */
+			}
+		});
+		
+		fillPeopleDetailsView(personId);
+	}
+	
+	private void fillPeopleDetailsView(long personId) {
+		Log.d("Fisherapp", "fillDetails method: personId = " + personId);
+		Cursor c = mDB.query(directoryPeople.PEOPLE_TABLE, null, "_id=" + personId, null, null, null, null);
+		startManagingCursor(c);
+		
+		Log.d("Fisherapp", "Cursor created");
+		
+		/** Fill in the details fields one-by-one */
+		if (c.moveToFirst()) {
+			for (int i = 0; i < c.getColumnCount(); i++) {
+				//Log.d("Fisherapp", "Cursor: " + c.getColumnName(i) + " " + c.getString(i));
+				updateAppropriateView(c.getColumnName(i), c.getString(i));
+			}
+		}
+	}
+	
+	private void updateAppropriateView(String columnName, String data) {
+		//Log.d("Fisherapp", columnName + ": " + data);
+		if (data == null)
+			data = "";
 		if (columnName.equals(directoryPeople.LAST_NAME)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			TextView t = (TextView)findViewById(R.id.txtFullName);
@@ -160,7 +159,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtEmail);
 			t.setText(data);
 		}
-    }
+	}
 
 	/** NEW METHOD onCreateOptionsMenu */
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -219,8 +218,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				Uri uri = People.createPersonInMyContactsGroup(getContentResolver(), values);
 				values.clear();
 				/* Add phone number */
-				Uri phoneUri = Uri.withAppendedPath(uri,
-						Contacts.People.Phones.CONTENT_DIRECTORY);
+				Uri phoneUri = Uri.withAppendedPath(uri, Contacts.People.Phones.CONTENT_DIRECTORY);
 				values.put(Contacts.Phones.NUMBER, phoneNumber);
 				values.put(Contacts.Phones.TYPE, Contacts.Phones.TYPE_WORK);
 				getContentResolver().insert(phoneUri, values);

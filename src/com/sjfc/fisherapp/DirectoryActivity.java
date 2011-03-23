@@ -55,30 +55,30 @@ public class DirectoryActivity extends Activity {
 	/** F.D.3.3 getDirectoryList() */
 	public Cursor getDirectoryList (CharSequence constraint)  {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-    	queryBuilder.setTables(
-    		directoryPeople.PEOPLE_TABLE
-    	);
-    	
-    	String asColumnsToReturn[] = { 
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.LAST_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.FIRST_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.MIDDLE_NAME + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople.JOB_TITLE + "," +
-    			directoryPeople.PEOPLE_TABLE + "."
-    			+ directoryPeople._ID
-    	};
-    	
-	    if (constraint == null  ||  constraint.length () == 0)  {
-	        //  Return the full list
-	    	return queryBuilder.query(mDB, asColumnsToReturn, null, null,
-	    			null, null, directoryPeople.DEFAULT_SORT_ORDER);
-	    }  else  {
-	        String value = constraint.toString()+"%";
-                return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? OR FIRST_NAME like ? OR MIDDLE_NAME like ?", new String[]{value,value,value}, null, null, null);
-	    }
+		queryBuilder.setTables(
+			directoryPeople.PEOPLE_TABLE
+		);
+		
+		String asColumnsToReturn[] = { 
+				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople.LAST_NAME + "," +
+				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople.FIRST_NAME + "," +
+				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople.MIDDLE_NAME + "," +
+				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople.JOB_TITLE + "," +
+				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople._ID
+		};
+		
+		if (constraint == null  ||  constraint.length () == 0)  {
+			//  Return the full list
+			return queryBuilder.query(mDB, asColumnsToReturn, null, null,
+					null, null, directoryPeople.DEFAULT_SORT_ORDER);
+		}  else  {
+			String value = constraint.toString()+"%";
+				return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? OR FIRST_NAME like ? OR MIDDLE_NAME like ?", new String[]{value,value,value}, null, null, null);
+		}
 	}
 }
