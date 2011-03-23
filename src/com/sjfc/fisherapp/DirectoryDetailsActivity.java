@@ -1,19 +1,24 @@
 package com.sjfc.fisherapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts;
+import android.provider.Contacts.Groups;
+import android.provider.Contacts.People;
 import android.util.Log;
 import android.view.Menu;
-import android.view.Menu.*;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
+@SuppressWarnings("deprecation")
 public class DirectoryDetailsActivity extends DirectoryActivity {
 	
 	public static final String KEY_PERSON_ID = "com.sjfc.fisherapp.person_id";
@@ -135,14 +140,6 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			office = data;
 			TextView t = (TextView)findViewById(R.id.txtOffice);
 			t.setText(data);
-			/*
-			t.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					String uri = "geo:43.117278648239015,-77.51273989677429";  
-					startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri))); 
-				}
-			});
-			*/
 		}
 		if (columnName.equals(directoryPeople.PHONE_NUMBER)) {
 			Log.d("Fisherapp", columnName + ": " + data);
@@ -188,6 +185,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	}
 	
 	/** NEW METHOD onOptionsItemSelected */
+	@SuppressWarnings("deprecation")
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d("Fisherapp", "Menu item id: " + item.getItemId());
 		switch(item.getItemId()) {		
@@ -215,6 +213,26 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				startActivity(shareIntent.createChooser(shareIntent, "Share with"));
 				break;
 			case 3: /* Add to Contacts */
+				ContentValues values = new ContentValues();
+				/* Create contact with name */
+				values.put(Contacts.People.NAME, fullName);
+				Uri uri = People.createPersonInMyContactsGroup(getContentResolver(), values);
+				values.clear();
+				/* Add phone number */
+				Uri phoneUri = Uri.withAppendedPath(uri,
+						Contacts.People.Phones.CONTENT_DIRECTORY);
+				values.put(Contacts.Phones.NUMBER, phoneNumber);
+				values.put(Contacts.Phones.TYPE, Contacts.Phones.TYPE_WORK);
+				getContentResolver().insert(phoneUri, values);
+				values.clear();
+				/* Add email address */
+				Uri emailUri = Uri.withAppendedPath(uri, People.ContactMethods.CONTENT_DIRECTORY);
+				values.put(People.ContactMethods.KIND, Contacts.KIND_EMAIL);
+				values.put(People.ContactMethods.DATA, emailAddress);
+				values.put(People.ContactMethods.TYPE, People.ContactMethods.TYPE_WORK);
+				getContentResolver().insert(emailUri, values);   
+				Toast.makeText(getApplicationContext(),
+						fullName + " added to Google contacts.", Toast.LENGTH_SHORT).show();
 				
 				break;
 		}
