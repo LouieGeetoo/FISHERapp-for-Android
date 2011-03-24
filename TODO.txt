@@ -3,6 +3,7 @@ TODO
 BUGS
 - Two syncs in a row results in zero results from the XmlPullParser on the second sync, emptying the list
 - Quitting the app via "back" button when not syncing results in force close
+- Drawables (menu icons, logo) are blurrier than they should be (especially compared to identical menu icons in other apps).
 
 Web Links
 - Add Web Links activity
