@@ -10,17 +10,19 @@
         	android:id="@+id/imgFISHERappLogo"
         	android:src="@drawable/fisherapplogo"
         	android:layout_centerVertical="true"
+        	android:scaleType="fitXY"
+        	android:maxHeight="3dp"
+        	android:maxWidth="5dp"
         	android:paddingTop="5dp"
         	android:paddingBottom="1dp"
         	android:paddingLeft="10dp"
         	android:clickable="true"
-        	android:focusable="true"/>
-        <ProgressBar android:layout_alignParentRight="true"
+        	android:focusable="true" />
+        <ImageButton android:layout_alignParentRight="true"
         	android:layout_centerVertical="true"
-        	android:id="@+id/progSyncStatus"
+        	android:id="@+id/btnSearch"
         	android:src="@drawable/search_white"
-        	android:layout_width="30dp"
-        	android:layout_height="30dp"
-        	android:padding="5dp"
-        	android:visibility="gone"/>
+        	android:background="@drawable/bar_right_button"
+        	android:layout_width="40dp"
+        	android:layout_height="40dp" android:visibility="invisible"/>
  </RelativeLayout>

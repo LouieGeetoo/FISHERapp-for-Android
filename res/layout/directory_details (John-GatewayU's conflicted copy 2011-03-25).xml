@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+    <include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
+    <include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
+    <ScrollView
+    	android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+		<LinearLayout android:id="@+id/lytDetails"
+			android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:orientation="vertical" >
+				<TextView
+						android:id="@+id/txtFullName"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingLeft="9dp"
+						android:textSize="26sp"
+						android:textColor="@android:color/black"
+						android:text="Full N. Name" />
+				<TextView
+						android:id="@+id/txtJobTitle"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10dp"
+						android:textSize="20sp"
+						android:textColor="@android:color/black"
+						android:text="Job Title" />
+				<TextView
+						android:id="@+id/txtDepartment"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10dp"
+						android:textSize="20sp"
+						android:textColor="@android:color/black"
+						android:text="Department" />
+				<TextView
+						android:id="@+id/txtGroup"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10dp"
+						android:textSize="20sp"
+						android:textColor="@android:color/black"
+						android:text="Faculty" />
+				<TextView
+						android:id="@+id/txtOffice"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10dp"
+						android:textSize="20sp"
+						android:textColor="@android:color/black"
+						android:text="BASIL 010" />
+				<TextView
+						android:id="@+id/txtPhone"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10dp"
+						android:textSize="20sp"
+						android:textColor="@android:color/black"
+						android:text="585-385-8016"
+						android:autoLink="phone"/>
+				<TextView
+						android:id="@+id/txtEmail"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10dp"
+						android:textSize="20sp"
+						android:textColor="@android:color/black"
+						android:text="jpray@sjfc.edu"
+						android:autoLink="email"/>
+	    </LinearLayout>	
+	</ScrollView>
+</LinearLayout>

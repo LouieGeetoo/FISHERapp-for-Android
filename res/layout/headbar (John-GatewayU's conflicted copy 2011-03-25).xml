@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_height="wrap_content"
+    	android:layout_width="match_parent"
+    	android:id="@+id/lytHeadBar"
+    	android:background="@color/fisher_maroon">
+        <ImageView android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentLeft="true"
+        	android:id="@+id/imgFISHERappLogo"
+        	android:src="@drawable/fisherapplogo"
+        	android:layout_centerVertical="true"
+        	android:paddingTop="5dp"
+        	android:paddingBottom="1dp"
+        	android:paddingLeft="10dp"
+        	android:clickable="true"
+        	android:focusable="true"/>
+        <ProgressBar android:layout_alignParentRight="true"
+        	android:layout_centerVertical="true"
+        	android:id="@+id/progSyncStatus"
+        	android:src="@drawable/search_white"
+        	android:layout_width="30dp"
+        	android:layout_height="30dp"
+        	android:padding="5dp"
+        	android:visibility="gone"/>
+ </RelativeLayout>
