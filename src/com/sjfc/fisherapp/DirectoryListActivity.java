@@ -188,7 +188,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 						Intent intent = new Intent(DirectoryListActivity.this,
 								DirectoryDetailsActivity.class);
 						intent.putExtra(DirectoryDetailsActivity.KEY_PERSON_ID, id);
-						startActivity(intent);
+						startActivityForResult(intent, 0);
 					}
 				});
 	}
@@ -398,12 +398,16 @@ public class DirectoryListActivity extends DirectoryActivity {
 	}
 	
 	/** NEW METHOD onDestroy */
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		parseThread.interrupt();
+		if (parseThread != null) {
+			parseThread.interrupt();
+		}
 	}
 
 	/** NEW METHOD onCreateOptionsMenu */
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		if(syncing && !firstLaunch) {
@@ -417,6 +421,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	}
 	
 	/** NEW METHOD onPrepareOptionsMenu */
+	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		menu.removeItem(0);
@@ -431,6 +436,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	}
 	
 	/** NEW METHOD onOptionsItemSelected */
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 			case 0:

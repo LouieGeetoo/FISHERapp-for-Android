@@ -51,7 +51,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
 		fisherappLogo.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				/** TODO: Go back to main menu? */
+				finishActivity(0);
 			}
 		});
 		
@@ -162,6 +162,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	}
 
 	/** NEW METHOD onCreateOptionsMenu */
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, 0, 0, "Dial")
@@ -175,16 +176,8 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		return true;
 	}
 	
-	/** NEW METHOD onPrepareOptionsMenu */
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		//menu.removeItem(0);
-
-		return true;
-	}
-	
 	/** NEW METHOD onOptionsItemSelected */
-	@SuppressWarnings("deprecation")
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d("Fisherapp", "Menu item id: " + item.getItemId());
 		switch(item.getItemId()) {		
