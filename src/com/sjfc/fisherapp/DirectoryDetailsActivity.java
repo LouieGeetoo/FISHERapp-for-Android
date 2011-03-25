@@ -165,7 +165,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, 0, 0, "Dial")
+		menu.add(0, 0, 0, "Call")
 			.setIcon(R.drawable.ic_menu_call);
 		menu.add(0, 1, 0, "Send Email")
 			.setIcon(R.drawable.ic_menu_send);
@@ -188,7 +188,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 				emailIntent.setType("text/email");
 				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{emailAddress});
-				startActivity(emailIntent);
+				startActivity(Intent.createChooser(emailIntent, "Send email using"));
 				break;
 			case 2:	/* Share */
 				String shareString =
@@ -202,7 +202,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
 				shareIntent.setType("text/plain");
 				shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
-				startActivity(shareIntent.createChooser(shareIntent, "Share with"));
+				startActivity(Intent.createChooser(shareIntent, "Share with"));
 				break;
 			case 3: /* Add to Contacts */
 				ContentValues values = new ContentValues();

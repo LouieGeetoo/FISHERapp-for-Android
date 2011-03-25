@@ -138,8 +138,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 	
 	/** F.D.1.3 fillPeopleListView */
 	private void fillPeopleListView() {
-		mCursor = getDirectoryList(null);
 		
+		mCursor = getDirectoryList(null);
 		startManagingCursor(mCursor);
 		
 		adapter = new SimpleCursorAdapter(this,
@@ -163,12 +163,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 		
 		EditText etext=(EditText)findViewById(R.id.search_box);
 		etext.addTextChangedListener(new TextWatcher() {
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
+			public void onTextChanged(CharSequence s, int start, int before, int count) { }
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 			public void afterTextChanged(Editable s) {
 				adapter.getFilter().filter(s.toString());
 			}
@@ -237,9 +233,6 @@ public class DirectoryListActivity extends DirectoryActivity {
 							syncing = true;
 							cancelSync = false;
 							hUpdateStatus.sendEmptyMessage(0);
-							
-							if(!firstLaunch)
-								sleep(5000);
 							
 							SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 							SharedPreferences.Editor prefsEditor = settings.edit();

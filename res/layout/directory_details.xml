@@ -60,7 +60,7 @@
 						android:paddingLeft="10dp"
 						android:textSize="20sp"
 						android:textColor="@android:color/black"
-						android:text="5853858016"
+						android:text="585-385-8016"
 						android:autoLink="phone"/>
 				<TextView
 						android:id="@+id/txtEmail"
