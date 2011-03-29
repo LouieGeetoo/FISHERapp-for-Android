@@ -1,10 +1,8 @@
 package com.sjfc.fisherapp;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 

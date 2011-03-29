@@ -43,6 +43,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	private static Thread parseThread;
 	private static SimpleCursorAdapter adapter;
 	private static boolean syncing = false;
+	private static boolean bugged = false;
 	private static boolean cancelSync;
 	private static boolean masterSyncSetting;
 	private static boolean firstLaunch;
@@ -99,6 +100,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	
 	/** NEW METHOD startSync */
 	public void startSync(boolean auto) {
+		cancelSync = false;
 		if(!syncing) {
 			if(auto) {
 				if(firstLaunch) {
@@ -219,114 +221,129 @@ public class DirectoryListActivity extends DirectoryActivity {
 					}
 					};
 					
-					Handler hNotifySyncCancelled = new Handler(){
-						public void handleMessage(Message msg) {
-							Toast.makeText(getApplicationContext(),
-									"Directory sync cancelled. (Press Home next time to let it run" +
-									" in the background.)", Toast.LENGTH_LONG).show();							
-						}
-						};
+				Handler hNotifySyncCancelled = new Handler(){
+					public void handleMessage(Message msg) {
+						Toast.makeText(getApplicationContext(),
+								"Directory sync cancelled. (Press Home next time to let it run" +
+								" in the background.)", Toast.LENGTH_LONG).show();							
+					}
+					};
 				
 				public void run() {
-					try {
-						if (!syncing) {
-							syncing = true;
-							cancelSync = false;
+					while(!success && !cancelSync) {
+						try {
+							if (!syncing) {
+								syncing = true;
+								cancelSync = false;
+								hUpdateStatus.sendEmptyMessage(0);
+								
+								SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+								SharedPreferences.Editor prefsEditor = settings.edit();
+								prefsEditor.commit();
+								
+								mDB.delete(directoryPeople.TEMP_TABLE, null, null);
+								
+								XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
+								XmlPullParser parser = parserCreator.newPullParser();
+								
+								URL feed = new URL(directoryUrl);
+								parser.setInput(feed.openStream(), null);
+								
+								ContentValues entry = new ContentValues();
+								int parserEvent = parser.getEventType();
+								String tag = "";
+								String value = "";
+								entryCount = 0;
+								
+								while (parserEvent != XmlPullParser.END_DOCUMENT) {
+									if(interrupted()) {
+										syncing = false;
+										success = false;
+										cancelSync = true;
+										hNotifySyncCancelled.sendEmptyMessage(0);
+										break;
+									}
+									
+									if(parserEvent == XmlPullParser.START_TAG) {
+										tag = parser.getName();
+										if (isPeopleField(tag)) {
+											parserEvent = parser.next();
+											value =  parser.getText();
+											entry.put(tag, value.replaceAll("\n", ""));
+										}
+									}
+									if(parserEvent == XmlPullParser.END_TAG && parser.getName().compareTo("ROW") == 0) {
+										mDB.insert(directoryPeople.TEMP_TABLE, null, entry);
+										entryCount++;
+										Log.d("Fisherapp", "Entry " + entryCount + " added to table_temp.");
+										hUpdateProgressBar.sendEmptyMessage(0);
+										entry.clear();
+									}
+								 	parserEvent = parser.next();
+								}
+								parserEvent = parser.next();
+								
+								if (cancelSync) {
+									bugged = false;
+								} else if (entryCount <= 0) {
+									bugged = true;
+								} else {
+									bugged = false;
+								}
+								
+								if(!cancelSync && !bugged) {
+									Log.d("Fisherapp", "Finished parsing People XML.");
+									
+									/** Copy temp table to permanent table */
+									mDB.delete(directoryPeople.PEOPLE_TABLE, null, null);
+									
+									String copyQuery = "INSERT INTO " + directoryPeople.PEOPLE_TABLE
+										+ " SELECT * FROM " + directoryPeople.TEMP_TABLE;
+									
+									mDB.execSQL(copyQuery);
+									
+									/** Delete contents of temp table */
+									mDB.delete(directoryPeople.TEMP_TABLE, null, null);
+									Log.d("Fisherapp", "Data copied to table_people.");
+									success = true;
+									bugged = false;
+									firstLaunch = false;
+									syncing = false;
+									
+									hUpdateStatus.sendEmptyMessage(0);
+
+									Calendar cal = Calendar.getInstance();
+									int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
+									int yearNow = cal.get(Calendar.YEAR);
+									Log.d("Fisherapp", "Sync finished: Week " + weekNow + " of " + yearNow);
+									String thisWeek = yearNow + "." + weekNow;
+									
+									prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
+									prefsEditor.putBoolean(PREF_FIRST_LAUNCH, firstLaunch);
+									prefsEditor.putInt(PREF_ENTRY_COUNT, entryCount);
+									prefsEditor.commit();
+								}
+								syncing = false;
+							}
+						} catch (Exception e) {
+							Log.e("Fisherapp", "XML Parse Error: " + e.toString());
+							success = false;
+							syncing = false;
+							bugged = false;
+							if (firstLaunch) {
+								hNotifySyncFailed.sendEmptyMessage(0);
+							}
 							hUpdateStatus.sendEmptyMessage(0);
-							
 							SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 							SharedPreferences.Editor prefsEditor = settings.edit();
 							prefsEditor.commit();
-							
-							mDB.delete(directoryPeople.TEMP_TABLE, null, null);
-							
-							XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
-							XmlPullParser parser = parserCreator.newPullParser();
-							
-							URL feed = new URL(directoryUrl);
-							parser.setInput(feed.openStream(), null);
-							
-							ContentValues entry = new ContentValues();
-							int parserEvent = parser.getEventType();
-							String tag = "";
-							String value = "";
-							entryCount = 0;
-							
-							while (parserEvent != XmlPullParser.END_DOCUMENT) {
-								if(interrupted()) {
-									syncing = false;
-									success = false;
-									cancelSync = true;
-									hNotifySyncCancelled.sendEmptyMessage(0);
-									break;
-								}
-								
-								if(parserEvent == XmlPullParser.START_TAG) {
-									tag = parser.getName();
-									if (isPeopleField(tag)) {
-										parserEvent = parser.next();
-										value =  parser.getText();
-										entry.put(tag, value.replaceAll("\n", ""));
-									}
-								}
-								if(parserEvent == XmlPullParser.END_TAG && parser.getName().compareTo("ROW") == 0) {
-									mDB.insert(directoryPeople.TEMP_TABLE, null, entry);
-									entryCount++;
-									Log.d("Fisherapp", "Entry " + entryCount + " added to table_temp.");
-									hUpdateProgressBar.sendEmptyMessage(0);
-									entry.clear();
-								}
-							 	parserEvent = parser.next();
-							}
-							
-							if(!cancelSync) {
-								Log.d("Fisherapp", "Finished parsing People XML.");
-								
-								/** Copy temp table to permanent table */
-								mDB.delete(directoryPeople.PEOPLE_TABLE, null, null);
-								
-								String copyQuery = "INSERT INTO " + directoryPeople.PEOPLE_TABLE
-									+ " SELECT * FROM " + directoryPeople.TEMP_TABLE;
-								
-								mDB.execSQL(copyQuery);
-								
-								/** Delete contents of temp table */
-								mDB.delete(directoryPeople.TEMP_TABLE, null, null);
-								Log.d("Fisherapp", "Data copied to table_people.");
-								success = true;
-								syncing = false;
-								firstLaunch = false;
-								
-								hUpdateStatus.sendEmptyMessage(0);
-
-								Calendar cal = Calendar.getInstance();
-								int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
-								int yearNow = cal.get(Calendar.YEAR);
-								Log.d("Fisherapp", "Sync finished: Week " + weekNow + " of " + yearNow);
-								String thisWeek = yearNow + "." + weekNow;
-								
-								prefsEditor.putString(PREF_LAST_SYNCED, thisWeek);
-								prefsEditor.putBoolean(PREF_FIRST_LAUNCH, firstLaunch);
-								prefsEditor.putInt(PREF_ENTRY_COUNT, entryCount);
-								prefsEditor.commit();
-							}
 						}
-					} catch (Exception e) {
-						Log.e("Fisherapp", "XML Parse Error: " + e.toString());
-						success = false;
-						syncing = false;
-						if (firstLaunch) {
-							hNotifySyncFailed.sendEmptyMessage(0);
-						}
-						hUpdateStatus.sendEmptyMessage(0);
-						SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-						SharedPreferences.Editor prefsEditor = settings.edit();
-						prefsEditor.commit();
 					}
+					
 
 					mHandler.post(new Runnable() {
 						public void run() {
-							if (!syncing) {
+							if (!syncing && !bugged) {
 								if (success) {
 									Toast.makeText(getApplicationContext(),
 											"Directory updated!", Toast.LENGTH_SHORT).show();

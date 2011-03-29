@@ -6,7 +6,7 @@
     <string name="synced_recently">Synced recently.</string>
     <string name="last_sync_failed">Last sync failed.</string>
     <string name="cached">Cached.</string>
-<string name="directory">People - Faculty/Staff Directory</string>
+<string name="directory">Faculty/Staff Directory</string>
 <string name="syncing">Syncing...</string>
 <string name="synced">Synced.</string>
 <string name="sync_failed">Sync failed.</string>
@@ -14,6 +14,6 @@
 <string name="waiting_to_sync">Waiting to sync...</string>
 <string name="first_sync_message">Please wait while the directory is synced for the first time.</string>
 <string name="blank"></string>
-<string name="directory_details">People - Details</string>
+<string name="directory_details">Faculty/Staff Directory - Details</string>
 <string name="directory_filter_hint">Start typing a name...</string>
 </resources>
