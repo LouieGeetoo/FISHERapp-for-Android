@@ -5,8 +5,7 @@
 	android:layout_width="match_parent"
 	android:orientation="vertical"
 	android:paddingLeft="10dp"
-	android:paddingRight="10dp"
-	android:background="@drawable/item_line_bottom">
+	android:paddingRight="10dp">
 	<LinearLayout android:id="@+id/nameLine"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
@@ -16,35 +15,35 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="20sp"
-				android:textColor="@android:color/black"
+				android:textColor="@color/list_text"
 				android:text="lastname" />
 			<TextView
 				android:id="@+id/nameSpace1"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="20sp"
-				android:textColor="@android:color/black"
+				android:textColor="@color/list_text"
 				android:text=", " />
 			<TextView
 				android:id="@+id/txtFirstName"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="20sp"
-				android:textColor="@android:color/black"
+				android:textColor="@color/list_text"
 				android:text="firstname" />
 			<TextView
 				android:id="@+id/nameSpace2"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="20sp"
-				android:textColor="@android:color/black"
+				android:textColor="@color/list_text"
 				android:text=" " />
 			<TextView
 				android:id="@+id/txtMiddle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="20sp"
-				android:textColor="@android:color/black"
+				android:textColor="@color/list_text"
 				android:text="middle" />	
 		</LinearLayout>
 	<LinearLayout android:id="@+id/titleLine"

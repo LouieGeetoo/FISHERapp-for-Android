@@ -6,35 +6,53 @@
     android:background="@android:color/white">
     <include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
     <include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
-    <EditText android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/directory_filter_hint"
-        android:maxLines="1"
-        android:inputType="textFilter|textCapWords"
-        android:id="@+id/search_box"/>
-	<LinearLayout android:id="@+id/emptyBox"
-		android:orientation="vertical"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:layout_gravity="center"
-		android:visibility="gone">
-		<ProgressBar
-		    android:layout_height="wrap_content"
-		    android:layout_width="match_parent"
-		    android:id="@+id/progressBar"
-		    style="?android:attr/progressBarStyleHorizontal"/>
-		<TextView android:id="@+id/TextView01"
-	        android:layout_height="wrap_content"
-	        android:background="@android:color/white"
-	        android:textSize="20sp"
-	        android:text="@string/first_sync_message"
-	        android:layout_width="wrap_content"
-	        android:layout_margin="20dp"/>
-	</LinearLayout>
-	<ListView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/listPeople"
-		android:divider="@android:drawable/divider_horizontal_dark"
-		android:cacheColorHint="@android:color/white" />
+	    	android:id="@+id/list_outer_container"> 
+	    <LinearLayout android:orientation="vertical"
+	    	android:layout_height="wrap_content"
+	    	android:layout_width="fill_parent"
+	    	android:background="@drawable/list_container_shape"
+	    	android:id="@+id/list_edittext_container"
+	    	android:paddingLeft="5dp"
+		    android:paddingRight="5dp">
+		    <EditText android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:hint="@string/directory_filter_hint"
+		        android:maxLines="1"
+		        android:inputType="textFilter|textCapWords"
+		        android:id="@+id/search_box" />
+	    </LinearLayout>
+		<LinearLayout android:id="@+id/emptyBox"
+			android:orientation="vertical"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_gravity="center"
+			android:visibility="gone"
+			android:paddingLeft="3dp"
+    		android:paddingRight="3dp"
+    		android:background="@color/list_background" >
+			<ProgressBar
+			    android:layout_height="wrap_content"
+			    android:layout_width="match_parent"
+			    android:id="@+id/progressBar"
+			    style="?android:attr/progressBarStyleHorizontal"/>
+			<TextView android:id="@+id/TextView01"
+		        android:layout_height="wrap_content"
+		        android:background="@android:color/white"
+		        android:textSize="20sp"
+		        android:text="@string/first_sync_message"
+		        android:layout_width="wrap_content"
+		        android:layout_margin="20dp"/>
+		</LinearLayout>
+		<ListView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/listPeople"
+			android:divider="@drawable/list_divider"
+			android:dividerHeight="1px"
+			android:background="@color/list_background"
+			android:cacheColorHint="@color/list_background" />
+		<ImageView
+			android:layout_width="match_parent"
+			android:layout_height="1px"
+			android:background="@drawable/list_divider" />
 </LinearLayout>

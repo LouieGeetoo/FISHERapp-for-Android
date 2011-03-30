@@ -12,13 +12,5 @@
         	android:layout_centerVertical="true"
         	android:paddingLeft="10dp"
         	android:id="@+id/txtTitle"
-        	android:text="People" />
-        <TextView android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_alignParentRight="true"
-        	android:textColor="@color/fisher_maroon"
-        	android:layout_centerVertical="true"
-        	android:paddingRight="5dp"
-        	android:text="@string/blank"
-			android:id="@+id/txtUpdateStatus" />
+        	android:text="People"/>
     </RelativeLayout>

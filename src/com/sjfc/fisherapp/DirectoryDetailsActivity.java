@@ -44,8 +44,6 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		/** Set yellow bar title and status text */
 		TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText(R.string.directory_details);
-		TextView txtUpdateStatus = (TextView)findViewById(R.id.txtUpdateStatus);
-		txtUpdateStatus.setText(R.string.blank);
 
 		/** Listen for logo push */
 		ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);

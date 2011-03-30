@@ -1,15 +1,12 @@
 TODO
 
-BUGS
-- Two syncs in a row results in zero results from the XmlPullParser on the second sync, emptying the list
+People
+- Improve aesthetics (gradients instead of solids, etc.)
 
 Web Links
 - Add Web Links activity
 
-Emergency
-- Add Emergency activity with emergency contact and other information
-
 Places
 - Add Places activity
 - Add Dining, Offices, SLC, Library, and Wellness Center info
-- Add Place details view (hours, contact info, ...location on Google Maps(?))
+- Add Place details view (hours, contact info)

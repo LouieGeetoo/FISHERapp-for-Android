@@ -3,7 +3,7 @@
 		android:layout_height="wrap_content"
     	android:layout_width="match_parent"
     	android:id="@+id/lytHeadBar"
-    	android:background="@color/fisher_maroon">
+    	android:background="@drawable/headbar_shape">
         <ImageView android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:layout_alignParentLeft="true"

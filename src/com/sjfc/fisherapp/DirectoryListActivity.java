@@ -145,7 +145,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 		startManagingCursor(mCursor);
 		
 		adapter = new SimpleCursorAdapter(this,
-				R.layout.directory_people_item, mCursor,
+				R.layout.directory_list_item, mCursor,
 				new String[]{
 					directoryPeople.LAST_NAME,
 					directoryPeople.FIRST_NAME,
