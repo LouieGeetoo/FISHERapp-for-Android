@@ -150,12 +150,16 @@ public class DirectoryListActivity extends DirectoryActivity {
 					directoryPeople.LAST_NAME,
 					directoryPeople.FIRST_NAME,
 					directoryPeople.MIDDLE_NAME,
-					directoryPeople.JOB_TITLE},
+					directoryPeople.JOB_TITLE,
+					directoryPeople.FAC_STAFF_DIR,
+					directoryPeople.DEPARTMENT},
 				new int[]{
 					R.id.txtLastName,
 					R.id.txtFirstName,
 					R.id.txtMiddle,
-					R.id.txtTitle} 
+					R.id.txtTitle,
+					R.id.txtGroup,
+					R.id.txtDepartment} 
 		); 
 		
 		ListView av = (ListView)findViewById(R.id.listPeople);
@@ -269,7 +273,9 @@ public class DirectoryListActivity extends DirectoryActivity {
 										if (isPeopleField(tag)) {
 											parserEvent = parser.next();
 											value =  parser.getText();
-											entry.put(tag, value.replaceAll("\n", ""));
+											entry.put(tag, value.replaceAll("\n", "")
+													.replaceAll("STAFF", "Staff")
+													.replaceAll("FACULTY", "Faculty"));
 										}
 									}
 									if(parserEvent == XmlPullParser.END_TAG && parser.getName().compareTo("ROW") == 0) {

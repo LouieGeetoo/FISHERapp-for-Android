@@ -15,5 +15,5 @@
 <string name="first_sync_message">Please wait while the directory is synced for the first time.</string>
 <string name="blank"></string>
 <string name="directory_details">Faculty/Staff Directory - Details</string>
-<string name="directory_filter_hint">Start typing a name...</string>
+<string name="directory_filter_hint">Start typing...</string>
 </resources>

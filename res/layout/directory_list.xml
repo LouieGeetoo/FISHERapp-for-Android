@@ -6,7 +6,6 @@
     android:background="@android:color/white">
     <include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
     <include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
-	    	android:id="@+id/list_outer_container"> 
 	    <LinearLayout android:orientation="vertical"
 	    	android:layout_height="wrap_content"
 	    	android:layout_width="fill_parent"
@@ -19,7 +18,8 @@
 		        android:hint="@string/directory_filter_hint"
 		        android:maxLines="1"
 		        android:inputType="textFilter|textCapWords"
-		        android:id="@+id/search_box" />
+		        android:id="@+id/search_box"
+		        android:ellipsize="end" />
 	    </LinearLayout>
 		<LinearLayout android:id="@+id/emptyBox"
 			android:orientation="vertical"

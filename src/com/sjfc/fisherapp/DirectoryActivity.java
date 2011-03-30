@@ -69,6 +69,10 @@ public class DirectoryActivity extends Activity {
 				directoryPeople.PEOPLE_TABLE + "."
 				+ directoryPeople.JOB_TITLE + "," +
 				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople.FAC_STAFF_DIR + "," +
+				directoryPeople.PEOPLE_TABLE + "."
+				+ directoryPeople.DEPARTMENT + "," +
+				directoryPeople.PEOPLE_TABLE + "."
 				+ directoryPeople._ID
 		};
 		
@@ -77,8 +81,13 @@ public class DirectoryActivity extends Activity {
 			return queryBuilder.query(mDB, asColumnsToReturn, null, null,
 					null, null, directoryPeople.DEFAULT_SORT_ORDER);
 		}  else  {
-			String value = constraint.toString()+"%";
-				return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn, "LAST_NAME like ? OR FIRST_NAME like ? OR MIDDLE_NAME like ?", new String[]{value,value,value}, null, null, null);
+			// Return a filtered list
+			String startsWith = constraint.toString()+"%";
+			String contains = "%"+startsWith;
+				return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn,
+						"LAST_NAME like ? OR FIRST_NAME like ? OR MIDDLE_NAME like ?" +
+						" OR FAC_STAFF_DIR like ? OR DEPARTMENT like ? OR JOB_TITLE like ?",
+						new String[]{startsWith,startsWith,startsWith,startsWith,contains,contains}, null, null, null);
 		}
 	}
 }
