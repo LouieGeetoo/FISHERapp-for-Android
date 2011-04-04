@@ -14,63 +14,35 @@
 	    	android:layout_height="wrap_content"
 	    	android:orientation="vertical" >
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtFullName"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:paddingLeft="9dp"
-						android:textSize="26sp"
-						android:textColor="@android:color/black"
 						android:text="Full N. Name" />
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtJobTitle"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:paddingLeft="10dp"
-						android:textSize="20sp"
-						android:textColor="@android:color/black"
 						android:text="Job Title" />
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtDepartment"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:paddingLeft="10dp"
-						android:textSize="20sp"
-						android:textColor="@android:color/black"
 						android:text="Department" />
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtGroup"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:paddingLeft="10dp"
-						android:textSize="20sp"
-						android:textColor="@android:color/black"
 						android:text="Faculty" />
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtOffice"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:paddingLeft="10dp"
-						android:textSize="20sp"
-						android:textColor="@android:color/black"
 						android:text="BASIL 010" />
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtPhone"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:paddingLeft="10dp"
-						android:textSize="20sp"
-						android:textColor="@android:color/black"
 						android:text="585-385-8016"
-						android:autoLink="phone"/>
+						android:autoLink="phone" />
 				<TextView
+						style="@style/directory_detail_item"
 						android:id="@+id/txtEmail"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:paddingLeft="10dp"
-						android:textSize="20sp"
-						android:textColor="@android:color/black"
 						android:text="jpray@sjfc.edu"
-						android:autoLink="email"/>
+						android:autoLink="email" />
 	    </LinearLayout>	
 	</ScrollView>
 </LinearLayout>

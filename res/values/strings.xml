@@ -16,4 +16,11 @@
 <string name="blank"></string>
 <string name="directory_details">Faculty/Staff Directory - Details</string>
 <string name="directory_filter_hint">Start typing...</string>
+<string name="no_name">no name listed</string>
+<string name="no_title">no job title listed</string>
+<string name="no_department">no department listed</string>
+<string name="no_group">no faculty/staff info listed</string>
+<string name="no_office">no office listed</string>
+<string name="no_phone">no phone number listed</string>
+<string name="no_email">no email address listed</string>
 </resources>

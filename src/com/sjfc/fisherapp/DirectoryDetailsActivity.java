@@ -113,49 +113,73 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			Log.d("Fisherapp", columnName + ": " + data);
 			group = data;
 			TextView t = (TextView)findViewById(R.id.txtGroup);
-			if(data.equals("FACULTY"))
-				t.setText("Faculty");
-			else if(data.equals("STAFF"))
-				t.setText("Staff");
-			else
+			if(data.length() <= 0) {
+				t.setText(R.string.no_group);
+				t.setTextColor(R.color.sub_gray);
+			} else {
 				t.setText(data);
+			}
 		}
 		if (columnName.equals(directoryPeople.JOB_TITLE)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			jobTitle = data;
 			TextView t = (TextView)findViewById(R.id.txtJobTitle);
-			t.setText(data);
+			if(data.length() <= 0) {
+				t.setText(R.string.no_title);
+				t.setTextColor(R.color.sub_gray);
+			} else {
+				t.setText(data);
+			}
 		}
 		if (columnName.equals(directoryPeople.DEPARTMENT)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			department = data;
 			TextView t = (TextView)findViewById(R.id.txtDepartment);
-			t.setText(data);
+			if(data.length() <= 0) {
+				t.setText(R.string.no_department);
+				t.setTextColor(R.color.sub_gray);
+			} else {
+				t.setText(data);
+			}
 		}
 		if (columnName.equals(directoryPeople.OFFICE)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			office = data;
 			TextView t = (TextView)findViewById(R.id.txtOffice);
-			t.setText(data);
+			if(data.length() <= 0) {
+				t.setText(R.string.no_office);
+				t.setTextColor(R.color.sub_gray);
+			} else {
+				t.setText(data);
+			}
 		}
 		if (columnName.equals(directoryPeople.PHONE_NUMBER)) {
 			Log.d("Fisherapp", columnName + ": " + data);
-			phoneNumber = data;
 			TextView t = (TextView)findViewById(R.id.txtPhone);
-			String number = "";
-			for (int i = 0; i < data.length(); i++) {
-				number = number + data.charAt(i);
-				if (i == 2 || i == 5) {
-					number = number + "-";
+			phoneNumber = "";
+			if(data.length() <= 0) {
+				t.setText(R.string.no_phone);
+				t.setTextColor(R.color.sub_gray);
+			} else {
+				for (int i = 0; i < data.length(); i++) {
+					phoneNumber = phoneNumber + data.charAt(i);
+					if (i == 2 || i == 5) {
+						phoneNumber = phoneNumber + "-";
+					}
 				}
+				t.setText(phoneNumber);
 			}
-			t.setText(number);
 		}
 		if (columnName.equals(directoryPeople.EMAIL)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			emailAddress = data;
 			TextView t = (TextView)findViewById(R.id.txtEmail);
-			t.setText(data);
+			if(data.length() <= 0) {
+				t.setText(R.string.no_email);
+				t.setTextColor(R.color.sub_gray);
+			} else {
+				t.setText(data);
+			}
 		}
 	}
 
@@ -164,9 +188,11 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, 0, 0, "Call")
-			.setIcon(R.drawable.ic_menu_call);
+			.setIcon(R.drawable.ic_menu_call)
+			.setEnabled(phoneNumber.length() > 0);
 		menu.add(0, 1, 0, "Send Email")
-			.setIcon(R.drawable.ic_menu_send);
+			.setIcon(R.drawable.ic_menu_send)
+			.setEnabled(emailAddress.length() > 0);
 		menu.add(0, 2, 0, "Share")
 			.setIcon(R.drawable.ic_menu_share);
 		menu.add(0, 3, 0, "Add to Contacts")

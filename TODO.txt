@@ -1,7 +1,7 @@
 TODO
 
 People
-- Improve aesthetics (gradients instead of solids, etc.)
+- Improve details view UI (make more readable, add Call and Email buttons)
 
 Web Links
 - Add Web Links activity
