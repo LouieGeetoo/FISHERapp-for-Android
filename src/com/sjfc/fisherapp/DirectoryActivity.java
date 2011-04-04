@@ -82,7 +82,7 @@ public class DirectoryActivity extends Activity {
 					null, null, directoryPeople.DEFAULT_SORT_ORDER);
 		}  else  {
 			// Return a filtered list
-			String noTrailingSpaces = constraint.toString().replaceAll("\\s+$", "");
+			String noTrailingSpaces = constraint.toString().trim();
 			String startsWith = noTrailingSpaces+"%";
 			String contains = "%"+startsWith;
 				return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn,
