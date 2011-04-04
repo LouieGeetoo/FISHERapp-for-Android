@@ -82,7 +82,7 @@
 			android:textSize="16sp"
 			android:text="title"
 			android:textColor="@color/sub_gray_dark"
-			android:maxLines="1"
+			android:singleLine="true"
 			android:ellipsize="end"/>
 	</LinearLayout>
 </LinearLayout>

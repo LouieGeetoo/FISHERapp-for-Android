@@ -115,7 +115,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtGroup);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_group);
-				t.setTextColor(R.color.sub_gray);
+				t.setTextColor(getResources().getColor(R.color.sub_gray_light));
 			} else {
 				t.setText(data);
 			}
@@ -126,7 +126,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtJobTitle);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_title);
-				t.setTextColor(R.color.sub_gray);
+				t.setTextColor(getResources().getColor(R.color.sub_gray_light));
 			} else {
 				t.setText(data);
 			}
@@ -137,7 +137,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtDepartment);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_department);
-				t.setTextColor(R.color.sub_gray);
+				t.setTextColor(getResources().getColor(R.color.sub_gray_light));
 			} else {
 				t.setText(data);
 			}
@@ -148,7 +148,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtOffice);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_office);
-				t.setTextColor(R.color.sub_gray);
+				t.setTextColor(getResources().getColor(R.color.sub_gray_light));
 			} else {
 				t.setText(data);
 			}
@@ -159,7 +159,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			phoneNumber = "";
 			if(data.length() <= 0) {
 				t.setText(R.string.no_phone);
-				t.setTextColor(R.color.sub_gray);
+				t.setTextColor(getResources().getColor(R.color.sub_gray_light));
 			} else {
 				for (int i = 0; i < data.length(); i++) {
 					phoneNumber = phoneNumber + data.charAt(i);
@@ -176,7 +176,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtEmail);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_email);
-				t.setTextColor(R.color.sub_gray);
+				t.setTextColor(getResources().getColor(getResources().getColor(R.color.sub_gray_light)));
 			} else {
 				t.setText(data);
 			}
@@ -187,15 +187,15 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, 0, 0, "Call")
+		menu.add(0, 0, 0, R.string.call_phone)
 			.setIcon(R.drawable.ic_menu_call)
 			.setEnabled(phoneNumber.length() > 0);
-		menu.add(0, 1, 0, "Send Email")
+		menu.add(0, 1, 0, R.string.send_email)
 			.setIcon(R.drawable.ic_menu_send)
 			.setEnabled(emailAddress.length() > 0);
-		menu.add(0, 2, 0, "Share")
+		menu.add(0, 2, 0, R.string.share)
 			.setIcon(R.drawable.ic_menu_share);
-		menu.add(0, 3, 0, "Add to Contacts")
+		menu.add(0, 3, 0, R.string.add_to_contacts)
 			.setIcon(R.drawable.ic_menu_invite);
 		return true;
 	}
@@ -212,7 +212,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 				emailIntent.setType("text/email");
 				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{emailAddress});
-				startActivity(Intent.createChooser(emailIntent, "Send email using"));
+				startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.send_email_header)));
 				break;
 			case 2:	/* Share */
 				String shareString =
@@ -226,7 +226,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
 				shareIntent.setType("text/plain");
 				shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
-				startActivity(Intent.createChooser(shareIntent, "Share with"));
+				startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_header)));
 				break;
 			case 3: /* Add to Contacts */
 				ContentValues values = new ContentValues();
@@ -247,7 +247,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				values.put(People.ContactMethods.TYPE, People.ContactMethods.TYPE_WORK);
 				getContentResolver().insert(emailUri, values);   
 				Toast.makeText(getApplicationContext(),
-						fullName + " added to Google contacts.", Toast.LENGTH_SHORT).show();
+						fullName + " " + getResources().getString(R.string.added_to_contacts), Toast.LENGTH_SHORT).show();
 				
 				break;
 		}

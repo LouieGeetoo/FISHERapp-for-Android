@@ -105,6 +105,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 			if(auto) {
 				if(firstLaunch) {
 					if (isTimeForSync()) {
+						Toast.makeText(getApplicationContext(),
+								getResources().getString(R.string.syncing), Toast.LENGTH_SHORT).show();
 						startXMLParseThread();
 					}
 				} else if(masterSyncSetting) {
@@ -113,6 +115,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 					}
 				}
 			} else {
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.syncing), Toast.LENGTH_SHORT).show();
 				startXMLParseThread();
 			}
 		}	
@@ -198,9 +202,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	/** F.D.1.4 startXMLParseThread */
 	private void startXMLParseThread() {
 		if (!syncing) {
-			Toast.makeText(getApplicationContext(),
-					"Updating directory...", Toast.LENGTH_SHORT).show();
-			
+
 			parseThread = new Thread () {
 				
 				boolean success = false;
@@ -221,15 +223,14 @@ public class DirectoryListActivity extends DirectoryActivity {
 				Handler hNotifySyncFailed = new Handler(){
 					public void handleMessage(Message msg) {
 						Toast.makeText(getApplicationContext(),
-								"Sync failed. Is there a data connection?", Toast.LENGTH_LONG).show();
+								getResources().getString(R.string.sync_failed), Toast.LENGTH_LONG).show();
 					}
 					};
 					
 				Handler hNotifySyncCancelled = new Handler(){
 					public void handleMessage(Message msg) {
 						Toast.makeText(getApplicationContext(),
-								"Directory sync cancelled. (Press Home next time to let it run" +
-								" in the background.)", Toast.LENGTH_LONG).show();							
+								getResources().getString(R.string.sync_canceled), Toast.LENGTH_LONG).show();							
 					}
 					};
 				
@@ -352,7 +353,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 							if (!syncing && !bugged) {
 								if (success) {
 									Toast.makeText(getApplicationContext(),
-											"Directory updated!", Toast.LENGTH_SHORT).show();
+											getResources().getString(R.string.synced), Toast.LENGTH_SHORT).show();
 								} else {
 								}
 								adapter.getCursor().requery();
@@ -421,20 +422,6 @@ public class DirectoryListActivity extends DirectoryActivity {
 			parseThread.interrupt();
 		}
 	}
-
-	/** NEW METHOD onCreateOptionsMenu */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		if(syncing && !firstLaunch) {
-			menu.add(0, 0, 0, "Cancel sync")
-				.setIcon(R.drawable.ic_menu_stop);
-		} else {
-			menu.add(0, 0, 0, "Sync now")
-				.setIcon(R.drawable.ic_menu_refresh);
-		}
-		return true;
-	}
 	
 	/** NEW METHOD onPrepareOptionsMenu */
 	@Override
@@ -442,10 +429,10 @@ public class DirectoryListActivity extends DirectoryActivity {
 		super.onPrepareOptionsMenu(menu);
 		menu.removeItem(0);
 		if(syncing && !firstLaunch) {
-			menu.add(0, 0, 0, "Cancel sync")
+			menu.add(0, 0, 0, R.string.stop_sync)
 				.setIcon(R.drawable.ic_menu_stop);
 		} else {
-			menu.add(0, 0, 0, "Sync now")
+			menu.add(0, 0, 0, R.string.start_sync)
 				.setIcon(R.drawable.ic_menu_refresh);
 		}
 		return true;

@@ -16,9 +16,19 @@
 				<TextView
 						style="@style/directory_detail_item"
 						android:id="@+id/txtFullName"
+						android:textSize="26sp"
+						android:layout_marginTop="3dp"
+						android:textColor="@color/list_text"
 						android:text="Full N. Name" />
+				<ImageView
+						android:layout_width="match_parent"
+						android:layout_height="1px"
+						android:background="@drawable/list_divider"
+						android:layout_marginBottom="3dp"
+						android:layout_marginTop="3dp"/>
 				<TextView
 						style="@style/directory_detail_item"
+						android:textColor="@color/list_text"
 						android:id="@+id/txtJobTitle"
 						android:text="Job Title" />
 				<TextView
@@ -27,10 +37,18 @@
 						android:text="Department" />
 				<TextView
 						style="@style/directory_detail_item"
+						android:textColor="@color/sub_gray"
 						android:id="@+id/txtGroup"
 						android:text="Faculty" />
+				<ImageView
+						android:layout_width="match_parent"
+						android:layout_height="1px"
+						android:background="@drawable/list_divider"
+						android:layout_marginBottom="3dp"
+						android:layout_marginTop="3dp"/>
 				<TextView
 						style="@style/directory_detail_item"
+						android:textColor="@color/list_text"
 						android:id="@+id/txtOffice"
 						android:text="BASIL 010" />
 				<TextView

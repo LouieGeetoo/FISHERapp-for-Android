@@ -30,18 +30,25 @@
 			android:paddingLeft="3dp"
     		android:paddingRight="3dp"
     		android:background="@color/list_background" >
-			<ProgressBar
-			    android:layout_height="wrap_content"
-			    android:layout_width="match_parent"
-			    android:id="@+id/progressBar"
-			    style="?android:attr/progressBarStyleHorizontal"/>
 			<TextView android:id="@+id/TextView01"
 		        android:layout_height="wrap_content"
-		        android:background="@android:color/white"
 		        android:textSize="20sp"
 		        android:text="@string/first_sync_message"
+		        android:textColor="@color/sub_gray_dark"
 		        android:layout_width="wrap_content"
-		        android:layout_margin="20dp"/>
+		        android:layout_marginTop="20dp"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginBottom="3dp"/>
+		    <ProgressBar
+			    android:layout_height="wrap_content"
+			    android:layout_width="fill_parent"
+			    android:layout_marginTop="3dp"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginBottom="20dp"
+			    android:id="@+id/progressBar"
+			    style="?android:attr/progressBarStyleHorizontal"/>
 		</LinearLayout>
 		<ListView
 			android:layout_width="match_parent"
@@ -50,9 +57,16 @@
 			android:divider="@drawable/list_divider"
 			android:dividerHeight="1px"
 			android:background="@color/list_background"
-			android:cacheColorHint="@color/list_background" />
+			android:cacheColorHint="@color/list_background" android:listSelector="@drawable/item_selector"/>
 		<ImageView
 			android:layout_width="match_parent"
 			android:layout_height="1px"
 			android:background="@drawable/list_divider" />
+		<TextView
+			style="@style/directory_detail_item"
+			android:layout_marginTop="7dp"
+			android:textColor="@color/sub_gray_med_light"
+			android:textSize="16sp"
+			android:id="@+id/footer"
+			android:text="@string/footer" />
 </LinearLayout>

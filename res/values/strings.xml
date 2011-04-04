@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, FISHERapp!</string>
     <string name="app_name">FISHERapp</string>
-    <string name="just_synced">Just synced.</string>
-    <string name="synced_recently">Synced recently.</string>
-    <string name="last_sync_failed">Last sync failed.</string>
-    <string name="cached">Cached.</string>
 <string name="directory">Faculty/Staff Directory</string>
-<string name="syncing">Syncing...</string>
-<string name="synced">Synced.</string>
-<string name="sync_failed">Sync failed.</string>
+<string name="syncing">Updating directory...</string>
+<string name="synced">SJFC directory updated.</string>
+<string name="sync_failed">SJFC directory update failed. No data connection?</string>
+<string name="sync_canceled">SJFC directory update canceled.</string>
 <string name="peopleurl">http://dl.dropbox.com/u/6648787/Projects/Fisherapp/directory/people.xml</string>
-<string name="waiting_to_sync">Waiting to sync...</string>
-<string name="first_sync_message">Please wait while the directory is synced for the first time.</string>
+<string name="first_sync_message">Please wait while the directory is downloaded for the first time.</string>
 <string name="blank"></string>
-<string name="directory_details">Faculty/Staff Directory - Details</string>
-<string name="directory_filter_hint">Start typing...</string>
+<string name="directory_details">Faculty/Staff Details</string>
+<string name="directory_filter_hint">Start typing to filter the list...</string>
 <string name="no_name">no name listed</string>
 <string name="no_title">no job title listed</string>
 <string name="no_department">no department listed</string>
@@ -23,4 +18,14 @@
 <string name="no_office">no office listed</string>
 <string name="no_phone">no phone number listed</string>
 <string name="no_email">no email address listed</string>
+<string name="footer">Type to filter by any of the following:\n• First, last, or middle name\n• Department or office\n• Position / job title\n• \&quot;Faculty\&quot; or \&quot;Staff\&quot;</string>
+<string name="start_sync">Update now</string>
+<string name="stop_sync">Cancel update</string>
+<string name="call_phone">Call</string>
+<string name="send_email">Send email</string>
+<string name="share">Share</string>
+<string name="add_to_contacts">Add to contacts</string>
+<string name="share_header">Share with</string>
+<string name="added_to_contacts">added to Google contacts.</string>
+<string name="send_email_header">Send email using</string>
 </resources>

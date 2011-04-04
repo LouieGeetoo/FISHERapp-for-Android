@@ -82,8 +82,7 @@ public class DirectoryActivity extends Activity {
 					null, null, directoryPeople.DEFAULT_SORT_ORDER);
 		}  else  {
 			// Return a filtered list
-			String noTrailingSpaces = constraint.toString().trim();
-			String startsWith = noTrailingSpaces+"%";
+			String startsWith = constraint.toString().trim()+"%";
 			String contains = "%"+startsWith;
 				return mDB.query(directoryPeople.PEOPLE_TABLE, asColumnsToReturn,
 						"LAST_NAME like ? OR FIRST_NAME like ? OR MIDDLE_NAME like ?" +
