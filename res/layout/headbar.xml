@@ -15,6 +15,7 @@
         	android:paddingLeft="10dp"
         	android:clickable="true"
         	android:focusable="true"/>
+        <TextView android:layout_toRightOf="@+id/imgFISHERappLogo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView1" android:layout_alignTop="@+id/imgFISHERappLogo" android:layout_alignBottom="@+id/imgFISHERappLogo" android:text="beta" android:textColor="@android:color/white" android:layout_marginTop="6dp" android:textSize="10sp"></TextView>
         <ProgressBar android:layout_alignParentRight="true"
         	android:layout_centerVertical="true"
         	android:id="@+id/progSyncStatus"

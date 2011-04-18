@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.sjfc.fisherapp"
-      android:versionCode="051" 
-      android:versionName="0.51"
-      android:installLocation="auto" > <!-- versionName 0.51 = versionCode 051 -->
+      android:installLocation="auto"
+      android:versionCode="053" 
+      android:versionName="0.53" > <!-- ex: versionName 0.51 = versionCode 051 -->
     <uses-sdk android:minSdkVersion="3"
     	android:targetSdkVersion="8" />
     <uses-permission android:name="android.permission.INTERNET"/>

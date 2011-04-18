@@ -176,7 +176,7 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			TextView t = (TextView)findViewById(R.id.txtEmail);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_email);
-				t.setTextColor(getResources().getColor(getResources().getColor(R.color.sub_gray_light)));
+				t.setTextColor(getResources().getColor(R.color.sub_gray_light));
 			} else {
 				t.setText(data);
 			}

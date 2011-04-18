@@ -34,10 +34,9 @@ import android.widget.Toast;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
-/** F.D.1 DirectoryListActivity */
+/** Displays full directory list with filter box; manages directory updates.
+ *  */
 public class DirectoryListActivity extends DirectoryActivity {
-	
-	/** F.D.1.V global variables */
 	public static String directoryUrl;
 	private static  Handler mHandler = new Handler();
 	private static Thread parseThread;
@@ -50,12 +49,14 @@ public class DirectoryListActivity extends DirectoryActivity {
 	private static int entryCount;
 	private ProgressBar mProgress;
 
-	/** F.D.1.1 onCreate */
+	/** 
+	 * Initializes and displays the Directory List View.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		/** Restore preferences */
+		/* Restore preferences */
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		//SharedPreferences.Editor prefsEditor = settings.edit();
 		syncing = settings.getBoolean(PREF_SYNCING, false);
@@ -82,11 +83,11 @@ public class DirectoryListActivity extends DirectoryActivity {
 		mProgress = (ProgressBar) findViewById(R.id.progressBar);
 		mProgress.setMax(entryCount);
 
-		/** Set yellow bar title and status text */
+		/* Set yellow bar title and status text */
 		TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText(R.string.directory);
 
-		/** Listen for logo click (for future "home menu" access) */
+		/* Listen for logo click (for future "home menu" access) */
 		ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
 		fisherappLogo.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -98,7 +99,10 @@ public class DirectoryListActivity extends DirectoryActivity {
 		startSync(true);
 	}
 	
-	/** NEW METHOD startSync */
+	/** Helper class to start the update parse thread.
+	 * Helps distinguish between auto-sync, manual sync, and first-launch sync.
+	 * @param auto	Whether this update was initiated automatically.
+	 * */
 	public void startSync(boolean auto) {
 		cancelSync = false;
 		if(!syncing) {
@@ -122,7 +126,10 @@ public class DirectoryListActivity extends DirectoryActivity {
 		}	
 	}
 	
-	/** F.D.1.2 isTimeForSync */
+	/** Checks whether it is time to start an auto-update.
+	 * Compares current week-of-the-year with the stored week-of-the-year of the last successful sync.
+	 * @return boolean
+	 * */
 	private boolean isTimeForSync() {
 		Calendar cal = Calendar.getInstance();
 		int weekNow = cal.get(Calendar.WEEK_OF_YEAR);
@@ -142,7 +149,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 		}
 	}
 	
-	/** F.D.1.3 fillPeopleListView */
+	/** Fills the ListView with local database data.
+	 * Queries the local MySQL database for full or filtered list and displays the results. */
 	private void fillPeopleListView() {
 		
 		mCursor = getDirectoryList(null);
@@ -199,7 +207,12 @@ public class DirectoryListActivity extends DirectoryActivity {
 				});
 	}
 	
-	/** F.D.1.4 startXMLParseThread */
+	/** Starts a thread to update the local database with the server's data.
+	 * Does not start a new parse thread if one already exists.
+	 * Thread parses the XML file found at the URL provided by the Office of Information Technology.
+	 * Parses into a temporary MySQL table and copies it into the permanent one upon completion.
+	 * If the parse results in 0 entries, it is run again to workaround an XmlPullParser bug.
+	 * Then updates the ListView. */
 	private void startXMLParseThread() {
 		if (!syncing) {
 
@@ -368,7 +381,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 		}		
 	}
 	
-	/** F.D.1.5 updateFirstSyncMessage */
+	/** Shows or hides the message and progress bar for the user to see upon their first launch of the app (when the list is empty and unusable). */
 	private void updateFirstSyncMessage(boolean first) {
 		View firstSyncMessage = (View) findViewById(R.id.emptyBox);
 		View filterBox = (View) findViewById(R.id.search_box);
@@ -381,7 +394,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 		}
 	}
 	
-	/** F.D.1.6 isPeopleField */
+	/** The parse thread uses this to decide whether its current tag is an entry field or not.
+	 * @return boolean */
 	public boolean isPeopleField(String tag) {
 		if (tag.equals(directoryPeople.LAST_NAME))
 			return true;
@@ -404,7 +418,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 		return false;
 	}
 	
-	/** F.D.1.7 updateSyncIndicator */
+	/** Shows or hides the indeterminate progress indicator circle in the title bar.
+	 *  @param visible Whether the indicator should be shown or hidden.*/
 	void updateSyncIndicator(boolean visible) {
 		View indicator = (View) findViewById(R.id.progSyncStatus);
 		int visibility = indicator.getVisibility();
@@ -414,7 +429,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 			indicator.setVisibility(View.GONE);
 	}
 	
-	/** NEW METHOD onDestroy */
+	/** Runs on Activity destruction; cleanly interrupts any running parse thread. */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

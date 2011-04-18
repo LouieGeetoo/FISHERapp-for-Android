@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FISHERapp</string>
+    <string name="app_name">FISHERapp Beta</string>
 <string name="directory">Faculty/Staff Directory</string>
 <string name="syncing">Updating directory...</string>
 <string name="synced">SJFC directory updated.</string>
