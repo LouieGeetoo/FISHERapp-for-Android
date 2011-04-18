@@ -37,16 +37,27 @@ import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 /** Displays full directory list with filter box; manages directory updates.
  *  */
 public class DirectoryListActivity extends DirectoryActivity {
+	/** The URL for the XML that the directory data is pulled from during an update. Defaults to https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml */
 	public static String directoryUrl;
-	private static  Handler mHandler = new Handler();
+	/** The thread that will be used to perform network updates. */
 	private static Thread parseThread;
+	/** The handler that the update thread will use to communicate with the UI thread. */
+	private static  Handler mHandler = new Handler();
+	/** The adapter that binds the local database to the ListView. */
 	private static SimpleCursorAdapter adapter;
+	/** Whether an update parse thread is currently running. */
 	private static boolean syncing = false;
+	/** Whether the parse thread has encountered the XmlPullParser zero results bug. */
 	private static boolean bugged = false;
+	/** Whether the running update was intentionally interrupted. */
 	private static boolean cancelSync;
+	/** Reflects the system-wide Background Data and Auto-Sync settings */
 	private static boolean masterSyncSetting;
+	/** Whether this is the first time the user has launched the app. */
 	private static boolean firstLaunch;
+	/** The number of people entries parsed in the current/just-run update. */
 	private static int entryCount;
+	/** The ProgressBar for the first-launch message and progress display. */
 	private ProgressBar mProgress;
 
 	/** 
@@ -438,7 +449,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 		}
 	}
 	
-	/** NEW METHOD onPrepareOptionsMenu */
+	/** Sets up what is displayed when the device's Menu button is pressed: "Update now" or "Stop update". */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
@@ -453,7 +464,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 		return true;
 	}
 	
-	/** NEW METHOD onOptionsItemSelected */
+	/** Handles Option Menu choice to start or stop a manual update. */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {

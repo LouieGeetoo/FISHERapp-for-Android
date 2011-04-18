@@ -9,10 +9,10 @@ import android.os.Bundle;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
-/** F.D.3 DirectoryActivity */
+/** Serves as a base class for {@link #DirectoryListActivity.class DirectoryListActivity} and {@link #DirectoryDetailsActivity.class DirectoryDetailsActivity} classes;
+ * provides global variables and methods for querying the local database.*/
 public class DirectoryActivity extends Activity {
 
-	/** F.D.3.V global variables */
 	protected FisherappDatabaseHelper mDatabase = null; 
 	protected Cursor mCursor = null;
 	protected SQLiteDatabase mDB = null;
@@ -23,9 +23,10 @@ public class DirectoryActivity extends Activity {
 	public static final String PREF_LAST_SYNCED = "lastSynced";
 	public static final String PREF_ENTRY_COUNT = "entryCount";
 	public static final String PREF_DIRECTORY_URL = "directoryUrl";
+	/** The XML update URL that will be used if one is not found in Preferences. https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml */
 	public static final String DEFAULT_DIRECTORY_URL = "https://genesee2.sjfc.edu:8910/pls/PROD/sjfc_android_app.employees_xml";
 
-	/** F.D.3.1 onCreate() */
+	/** Runs on Activity creation; initializes the local database. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class DirectoryActivity extends Activity {
 		
 	}
 
-	/** F.D.3.2 onDestroy() */
+	/** Runs on Activity destruction; saves Preferences and cleanly closes the database. */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -52,7 +53,11 @@ public class DirectoryActivity extends Activity {
 		}
 	}
 
-	/** F.D.3.3 getDirectoryList() */
+	/**
+	 * Queries the database and returns a Cursor containing a full or partial list depending on the filter passed in.
+	 * @param constraint String to filter the list by, if any.
+	 * @return Cursor
+	 */
 	public Cursor getDirectoryList (CharSequence constraint)  {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 		queryBuilder.setTables(
