@@ -2,11 +2,16 @@ package com.sjfc.fisherapp;
 
 import android.provider.BaseColumns;
 
+/**
+ * Implements local MySQL database schema variables.
+ */
 public final class FisherappDatabase {
 	
 	private FisherappDatabase() {}
 	
-	/** DIRECTORY_PEOPLE schema */
+	/**
+	 * Implements local MySQL database schema variables.
+	 */
 	public static final class directoryPeople implements BaseColumns {
 		private directoryPeople() {}
 		public static final String PEOPLE_TABLE = "table_directory_people";

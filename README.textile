@@ -1,20 +1,20 @@
 h1. FISHERapp for Android
 
-bq. A smartphone app to make the lives of St. John Fisher College’s community members easier.
+bq. A smartphone app to make the lives of St. John Fisher College's community members easier.
 
-h2. Ever tried to access the SJFC website in your smartphone’s browser?
+h2. Ever tried to access the SJFC website in your smartphone's browser?
 
 h3. Then you already know my reasons for doing this project.
 
-Trying to use websites designed for desktop computers and mice on your smartphone’s small screen with touch controls is a pain! And what if you’re somewhere without a wireless connection? You can’t get to the info you need at all, let alone easily!
+Trying to use websites designed for desktop computers and mice on your smartphone's small screen with touch controls is a pain! And what if you're somewhere without a wireless connection? You can't get to the info you need at all, let alone easily!
 
 These are the problems FISHERapp intends to solve for those of us at Fisher with phones running on the Android system (like the Verizon Droids, Samsung Galaxy S phones, the HTC Evo, and many more).
 
 h2. "Beta"
 
-Like all good things today, FISHERapp is still in “beta”. That means it’s not quite finished yet, but that what is done is already useful!
+Like all good things in their early days, FISHERapp is still in "beta". That means it's not quite finished yet, but that what is done is already useful!
 
-Right now FISHERapp Beta contains a fully-featured Faculty/Staff Directory. Give it a try—I bet you’ll find it useful!
+Right now FISHERapp Beta contains a fully-featured Faculty/Staff Directory. Give it a try—I bet you'll find it useful!
 
 More features, like dining and office hours, are planned for the future.
 Stay tuned!
@@ -25,14 +25,14 @@ h3. Under the hood
 
 At a school like Fisher, things are constantly changing. Instructors come and go, dining hours are adjusted, new buildings are built – the list goes on.
 
-Thanks to the cooperation of OIT, FISHERapp is always up to date! Every week (or more often, if you want) it checks the school’s servers for updated versions of all of its info, and downloads it automatically. You never have to worry about it being out of date.
+Thanks to the cooperation of OIT, FISHERapp is always up to date! Every week (or more often, if you want) it checks the school's servers for updated versions of all of its info, and downloads it automatically. You never have to worry about it being out of date.
 
-So when you need to find the office of that new professor, there’s no need to find a lab computer and wait for the website to load. Just pull out your phone, and the latest info is literally at your fingertips (or wingtips). Brilliant!
+So when you need to find the office of that new professor, there's no need to find a lab computer and wait for the website to load. Just pull out your phone, and the latest info is literally at your fingertips (or wingtips). Brilliant!
 
 
 h2. Try it out!
 
-Ready to try out FISHERapp Beta with its fully-featured Faculty-Staff Directory on your own Android phone? Simply use your phone’s barcode scanner to scan that QR code to the right, or point its browser to this address: http://dft.ba/-fisherapp-beta
+Ready to try out FISHERapp Beta with its fully-featured Faculty-Staff Directory on your own Android phone? Simply point your non-AT&T Android phone's browser to this address: :http://dft.ba/-fisherapp-beta
 
-You’ll be downloading and trying it out in no time.
+You'll be downloading and trying it out in no time.
 

@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
+/** Displays details for one Faculty or Staff member as chosen in {@link #DirectoryListActivity.class DirectoryListActivity}.
+ * Shows full name, job title, department, faculty/staff status, office location, office phone number, and Fisher email address, with some extra options and functionality.
+ */
 @SuppressWarnings("deprecation")
 public class DirectoryDetailsActivity extends DirectoryActivity {
 	
@@ -32,6 +35,9 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	private static String phoneNumber = "";
 	private static String emailAddress = "";
 	
+	/** 
+	 * Initializes and displays the Directory Details View.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -41,21 +47,26 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.directory_details);
 
-		/** Set yellow bar title and status text */
+		/* Set yellow bar title and status text */
 		TextView txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText(R.string.directory_details);
 
-		/** Listen for logo push */
+		/* Listen for logo push */
 		ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
 		fisherappLogo.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				finishActivity(0);
+				/* Do nothing. */
 			}
 		});
 		
 		fillPeopleDetailsView(personId);
 	}
 	
+	/**
+	 * Queries the database and fills the TextViews with the appropriate information.
+	 * 
+	 * @param personId The ID of the database entry as passed in by {@link #DirectoryListActivity.class DirectoryListActivity}.
+	 */
 	private void fillPeopleDetailsView(long personId) {
 		Log.d("Fisherapp", "fillDetails method: personId = " + personId);
 		Cursor c = mDB.query(directoryPeople.PEOPLE_TABLE, null, "_id=" + personId, null, null, null, null);
@@ -63,17 +74,21 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		
 		Log.d("Fisherapp", "Cursor created");
 		
-		/** Fill in the details fields one-by-one */
+		/* Fill in the details fields one-by-one */
 		if (c.moveToFirst()) {
 			for (int i = 0; i < c.getColumnCount(); i++) {
-				//Log.d("Fisherapp", "Cursor: " + c.getColumnName(i) + " " + c.getString(i));
 				updateAppropriateView(c.getColumnName(i), c.getString(i));
 			}
 		}
 	}
 	
+	/**
+	 * Updates the appropriate TextView for the data passed in.
+	 * 
+	 * @param columnName The name of the database table column (e.g. "LAST_NAME")
+	 * @param data The value of the field passed in (e.g. "Bain")
+	 */
 	private void updateAppropriateView(String columnName, String data) {
-		//Log.d("Fisherapp", columnName + ": " + data);
 		if (data == null)
 			data = "";
 		if (columnName.equals(directoryPeople.LAST_NAME)) {
@@ -183,7 +198,11 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		}
 	}
 
-	/** NEW METHOD onCreateOptionsMenu */
+	/**
+	 * Initializes the Options Menu that comes up when the user presses the Menu button on their device.
+	 * 
+	 * Options are Call Phone, Send Email, Share, and Add to Contacts.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -200,7 +219,9 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		return true;
 	}
 	
-	/** NEW METHOD onOptionsItemSelected */
+	/**
+	 * Implements the actual functionality of the Options Menu items when they are clicked.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d("Fisherapp", "Menu item id: " + item.getItemId());

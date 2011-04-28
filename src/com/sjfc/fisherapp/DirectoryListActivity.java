@@ -102,7 +102,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 		ImageView fisherappLogo = (ImageView) findViewById(R.id.imgFISHERappLogo);
 		fisherappLogo.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
+				/* Do nothing. */
 			}
 		});
 		
