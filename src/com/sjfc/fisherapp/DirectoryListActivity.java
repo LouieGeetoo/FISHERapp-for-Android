@@ -475,7 +475,6 @@ public class DirectoryListActivity extends DirectoryActivity {
 					startSync(false);
 				}
 			default:
-				//invalidateOptionsMenu(); /* Needed for Android 3.0 (tablets) */
 				return true;
 		}
 	}
