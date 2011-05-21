@@ -55,12 +55,12 @@
 						style="@style/directory_detail_item"
 						android:id="@+id/txtPhone"
 						android:text="585-385-8016"
-						android:autoLink="phone" />
+						android:autoLink="phone" android:textColorLink="@color/fisher_maroon"/>
 				<TextView
 						style="@style/directory_detail_item"
 						android:id="@+id/txtEmail"
 						android:text="jpray@sjfc.edu"
-						android:autoLink="email" />
+						android:autoLink="email" android:textColorLink="@color/fisher_maroon"/>
 	    </LinearLayout>	
 	</ScrollView>
 </LinearLayout>

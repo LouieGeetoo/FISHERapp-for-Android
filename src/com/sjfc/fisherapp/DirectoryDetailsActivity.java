@@ -230,10 +230,8 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				startActivity(new Intent(android.content.Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber)));
 				break;
 			case 1: /* Send Email */
-				Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-				emailIntent.setType("text/email");
-				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{emailAddress});
-				startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.send_email_header)));
+				Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + emailAddress));
+				startActivity(emailIntent);
 				break;
 			case 2:	/* Share */
 				String shareString =
