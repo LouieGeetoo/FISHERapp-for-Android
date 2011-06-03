@@ -2,20 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_height="wrap_content"
     	android:layout_width="match_parent"
-    	android:id="@+id/lytHeadBar"
-    	android:background="@drawable/headbar_shape">
+    	android:id="@+id/lytHeadBar" android:background="@color/fisher_maroon">
         <ImageView android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:layout_alignParentLeft="true"
         	android:id="@+id/imgFISHERappLogo"
         	android:src="@drawable/fisherapplogo"
         	android:layout_centerVertical="true"
-        	android:paddingTop="5dp"
-        	android:paddingBottom="1dp"
         	android:paddingLeft="10dp"
         	android:clickable="true"
-        	android:focusable="true"/>
-        <TextView android:layout_toRightOf="@+id/imgFISHERappLogo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView1" android:layout_alignTop="@+id/imgFISHERappLogo" android:layout_alignBottom="@+id/imgFISHERappLogo" android:text="beta" android:textColor="@android:color/white" android:layout_marginTop="6dp" android:textSize="10sp"></TextView>
+        	android:focusable="true" android:paddingBottom="1dp" android:paddingTop="5dp"/>
+        <TextView android:layout_toRightOf="@+id/imgFISHERappLogo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView1" android:layout_alignTop="@+id/imgFISHERappLogo" android:layout_alignBottom="@+id/imgFISHERappLogo" android:text="beta" android:textColor="@android:color/white" android:layout_marginTop="6dp" android:textSize="8sp"></TextView>
         <ProgressBar android:layout_alignParentRight="true"
         	android:layout_centerVertical="true"
         	android:id="@+id/progSyncStatus"

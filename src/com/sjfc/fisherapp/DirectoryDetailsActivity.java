@@ -1,12 +1,16 @@
 package com.sjfc.fisherapp;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Contacts;
 import android.provider.Contacts.People;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -248,28 +252,48 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_header)));
 				break;
 			case 3: /* Add to Contacts */
-				ContentValues values = new ContentValues();
-				/* Create contact with name */
-				values.put(Contacts.People.NAME, fullName);
-				Uri uri = People.createPersonInMyContactsGroup(getContentResolver(), values);
-				values.clear();
-				/* Add phone number */
-				Uri phoneUri = Uri.withAppendedPath(uri, Contacts.People.Phones.CONTENT_DIRECTORY);
-				values.put(Contacts.Phones.NUMBER, phoneNumber);
-				values.put(Contacts.Phones.TYPE, Contacts.Phones.TYPE_WORK);
-				getContentResolver().insert(phoneUri, values);
-				values.clear();
-				/* Add email address */
-				Uri emailUri = Uri.withAppendedPath(uri, People.ContactMethods.CONTENT_DIRECTORY);
-				values.put(People.ContactMethods.KIND, Contacts.KIND_EMAIL);
-				values.put(People.ContactMethods.DATA, emailAddress);
-				values.put(People.ContactMethods.TYPE, People.ContactMethods.TYPE_WORK);
-				getContentResolver().insert(emailUri, values);   
-				Toast.makeText(getApplicationContext(),
-						fullName + " " + getResources().getString(R.string.added_to_contacts), Toast.LENGTH_SHORT).show();
-				
+				addLocalContact();
 				break;
 		}
 		return true;
+	}
+	
+	/** This Google-contact-adding method was used for compatibility with pre-2.0 Android phones.
+	 * It may be re-implemented in the future, but probably not as only a very small percentage of users still use such devices.
+	 */
+	private void addGoogleContact() {
+		ContentValues values = new ContentValues();
+		/* Create contact with name */
+		values.put(Contacts.People.NAME, fullName);
+		Uri uri = People.createPersonInMyContactsGroup(getContentResolver(), values);
+		values.clear();
+		/* Add phone number */
+		Uri phoneUri = Uri.withAppendedPath(uri, Contacts.People.Phones.CONTENT_DIRECTORY);
+		values.put(Contacts.Phones.NUMBER, phoneNumber);
+		values.put(Contacts.Phones.TYPE, Contacts.Phones.TYPE_WORK);
+		getContentResolver().insert(phoneUri, values);
+		values.clear();
+		/* Add email address */
+		Uri emailUri = Uri.withAppendedPath(uri, People.ContactMethods.CONTENT_DIRECTORY);
+		values.put(People.ContactMethods.KIND, Contacts.KIND_EMAIL);
+		values.put(People.ContactMethods.DATA, emailAddress);
+		values.put(People.ContactMethods.TYPE, People.ContactMethods.TYPE_WORK);
+		getContentResolver().insert(emailUri, values);   
+		Toast.makeText(getApplicationContext(),
+				fullName + " " + getResources().getString(R.string.added_to_contacts), Toast.LENGTH_SHORT).show();		
+	}
+	
+	/** This method uses the new and improved method of contact-adding, but it requires the app to be Android 2.0 or above only.
+	 * 
+	 */
+	private void addLocalContact() { /* NOTE: This will require Android 2.0 or later on the device... */
+		Intent intent = new Intent(Intent.ACTION_INSERT);
+		intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+		intent.putExtra(ContactsContract.Intents.Insert.NAME, fullName);
+		intent.putExtra(ContactsContract.Intents.Insert.PHONE, phoneNumber);
+		intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
+		intent.putExtra(ContactsContract.Intents.Insert.EMAIL, emailAddress);
+		intent.putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK);
+		startActivityForResult(intent, 0);
 	}
 }
