@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 /** Serves as a base class for {@link #DirectoryListActivity.class DirectoryListActivity} and {@link #DirectoryDetailsActivity.class DirectoryDetailsActivity} classes;
@@ -16,6 +17,9 @@ public class DirectoryActivity extends Activity {
 	protected FisherappDatabaseHelper mDatabase = null; 
 	protected Cursor mCursor = null;
 	protected SQLiteDatabase mDB = null;
+	
+	/** The Google Analytics tracker object for gathering anonymous usage data. */
+	protected GoogleAnalyticsTracker tracker;
 	
 	public static final String PREFS_NAME = "FisherappPrefs";
 	public static final String PREF_FIRST_LAUNCH = "firstLaunch";
@@ -33,7 +37,6 @@ public class DirectoryActivity extends Activity {
 		
 		mDatabase = new FisherappDatabaseHelper(this.getApplicationContext());
 		mDB = mDatabase.getWritableDatabase();
-		
 	}
 
 	/** Runs on Activity destruction; saves Preferences and cleanly closes the database. */

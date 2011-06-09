@@ -1,9 +1,6 @@
 package com.sjfc.fisherapp;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,10 +12,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 /** Displays details for one Faculty or Staff member as chosen in {@link #DirectoryListActivity.class DirectoryListActivity}.
@@ -38,6 +37,8 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 	private static String office = "";
 	private static String phoneNumber = "";
 	private static String emailAddress = "";
+	
+	private static String building = "";
 	
 	/** 
 	 * Initializes and displays the Directory Details View.
@@ -64,6 +65,15 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		});
 		
 		fillPeopleDetailsView(personId);
+		
+		View phoneButton1 = (View)findViewById(R.id.phoneOuter);
+		View phoneButton2 = (View)findViewById(R.id.txtPhone);
+		phoneButton1.setOnClickListener(phoneListener);
+		phoneButton2.setOnClickListener(phoneListener);
+		View emailButton1 = (View)findViewById(R.id.emailOuter);
+		View emailButton2 = (View)findViewById(R.id.txtEmail);
+		emailButton1.setOnClickListener(emailListener);
+		emailButton2.setOnClickListener(emailListener);
 	}
 	
 	/**
@@ -83,6 +93,22 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 			for (int i = 0; i < c.getColumnCount(); i++) {
 				updateAppropriateView(c.getColumnName(i), c.getString(i));
 			}
+		}
+		
+		/* Start Google Analytics tracking */
+		if (true) { // TODO: Make tracking only occur if the user has agreed/opted-in (use Preferences)
+			tracker = GoogleAnalyticsTracker.getInstance();
+			tracker.start(this.getString(R.string.analytics_api_key), 10, getApplicationContext());
+			tracker.setDebug(true); //TODO: Remove this DEBUG line for deployment
+			tracker.setDryRun(true);  //TODO: Remove this DEBUG line for deployment
+			
+			/* Record a Details activity view in Google Analytics */
+			tracker.trackPageView("/" + this.getLocalClassName());
+			/* Record some info about who's actually being viewed */
+			tracker.setCustomVar(1, "FacStaff Title", jobTitle, 3);
+			tracker.setCustomVar(2, "FacStaff Group", group, 3);
+			tracker.setCustomVar(3, "FacStaff Department", department, 3);
+			tracker.setCustomVar(4, "FacStaff Building", building, 3);
 		}
 	}
 	
@@ -164,6 +190,15 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		if (columnName.equals(directoryPeople.OFFICE)) {
 			Log.d("Fisherapp", columnName + ": " + data);
 			office = data;
+			
+			/* Perform a simply String manipulation to try to get just the building */
+			int spaceIndex =  office.indexOf(' ');
+			if(spaceIndex == -1) {
+				building = office;
+			} else {
+				building = office.substring(0,spaceIndex);
+			}
+
 			TextView t = (TextView)findViewById(R.id.txtOffice);
 			if(data.length() <= 0) {
 				t.setText(R.string.no_office);
@@ -202,6 +237,30 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		}
 	}
 
+	private OnClickListener phoneListener = new OnClickListener() {
+	    public void onClick(View v) {
+	    	if(true) { // TODO
+				tracker.trackEvent("ui_interaction",				// category
+									"call_phone_facstaff",			// action
+									"Button",					// label
+									0);								// value
+			}
+	      callPhone();
+	    }
+	};
+
+	private OnClickListener emailListener = new OnClickListener() {
+	    public void onClick(View v) {
+	    	if(true) { // TODO
+				tracker.trackEvent("ui_interaction",				// category
+									"send_email_facstaff",			// action
+									"Button",					// label
+									0);						// value
+			}
+	      sendEmail();
+	    }
+	};
+	
 	/**
 	 * Initializes the Options Menu that comes up when the user presses the Menu button on their device.
 	 * 
@@ -231,13 +290,32 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 		Log.d("Fisherapp", "Menu item id: " + item.getItemId());
 		switch(item.getItemId()) {		
 			case 0: /* Dial */
-				startActivity(new Intent(android.content.Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber)));
+				/* Record this interaction */
+				if(true) { // TODO
+					tracker.trackEvent("ui_interaction",				// category
+										"call_phone_facstaff",			// action
+										"Options_Menu",					// label
+										0);								// value
+				}
+				callPhone();
 				break;
 			case 1: /* Send Email */
-				Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + emailAddress));
-				startActivity(emailIntent);
+				/* Record this interaction */
+				if(true) { // TODO
+					tracker.trackEvent("ui_interaction",				// category
+										"send_email_facstaff",			// action
+										"Options_Menu",					// label
+										0);						// value
+				}
+				sendEmail();
 				break;
 			case 2:	/* Share */
+				if(true) { // TODO
+					tracker.trackEvent("ui_interaction",				// category
+										"share_info_facstaff",			// action
+										"Options_Menu",					// label
+										0);						// value
+				}
 				String shareString =
 					fullName + "\n" +
 					jobTitle + "\n" +
@@ -252,10 +330,25 @@ public class DirectoryDetailsActivity extends DirectoryActivity {
 				startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_header)));
 				break;
 			case 3: /* Add to Contacts */
+				if(true) { // TODO
+					tracker.trackEvent("ui_interaction",				// category
+										"add_to_contacts_facstaff",		// action
+										"Options_Menu",					// label
+										0);						// value
+				}
 				addLocalContact();
 				break;
 		}
 		return true;
+	}
+	
+	private void callPhone() {
+		startActivity(new Intent(android.content.Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber)));
+	}
+	
+	private void sendEmail() {
+		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + emailAddress));
+		startActivity(emailIntent);
 	}
 	
 	/** This Google-contact-adding method was used for compatibility with pre-2.0 Android phones.

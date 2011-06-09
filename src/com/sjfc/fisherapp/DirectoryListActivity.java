@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.sjfc.fisherapp.FisherappDatabase.directoryPeople;
 
 /** Displays full directory list with filter box; manages directory updates.
@@ -55,6 +57,8 @@ public class DirectoryListActivity extends DirectoryActivity {
 	private static boolean masterSyncSetting;
 	/** Whether this is the first time the user has launched the app. */
 	private static boolean firstLaunch;
+	/** Data connectivity info, checked in onCreate. */ 
+	NetworkInfo mNetworkInfo;
 	/** The number of people entries parsed in the current/just-run update. */
 	private static int entryCount;
 	/** The ProgressBar for the first-launch message and progress display. */
@@ -67,6 +71,7 @@ public class DirectoryListActivity extends DirectoryActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		
 		/* Restore preferences */
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		//SharedPreferences.Editor prefsEditor = settings.edit();
@@ -74,6 +79,14 @@ public class DirectoryListActivity extends DirectoryActivity {
 		directoryUrl = settings.getString(PREF_DIRECTORY_URL, DEFAULT_DIRECTORY_URL);
 		firstLaunch = settings.getBoolean(PREF_FIRST_LAUNCH, true);
 		entryCount = settings.getInt(PREF_ENTRY_COUNT, 634);
+		
+		/* Start Google Analytics tracking */
+		if (true) { // TODO: Make tracking only occur if the user has agreed/opted-in (use Preferences)
+			tracker = GoogleAnalyticsTracker.getInstance();
+			tracker.start(this.getString(R.string.analytics_api_key), 10, getApplicationContext());
+			tracker.setDebug(true); //TODO: Remove this DEBUG line for deployment
+			tracker.setDryRun(true);  //TODO: Remove this DEBUG line for deployment
+		}
 		
 		/* Check whether the user has system-wide background syncing enabled */
 		ConnectivityManager mgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -84,8 +97,12 @@ public class DirectoryListActivity extends DirectoryActivity {
 		if(!mgr.getBackgroundDataSetting()) {
 			masterSyncSetting = false;
 		}
+		/* Check whether there is even an active data connection */
+		mNetworkInfo = mgr.getActiveNetworkInfo();
+			
 		Log.d("Fisherapp", "onCreate: syncing = " + syncing + " | directoryUrl = " + directoryUrl);
 		Log.d("Fisherapp", "masterSyncSetting = " + masterSyncSetting);
+		Log.d("Fisherapp", "Network connectivity: " + mNetworkInfo);
 		
 		setContentView(R.layout.directory_list);
 		updateSyncIndicator(syncing);
@@ -106,26 +123,54 @@ public class DirectoryListActivity extends DirectoryActivity {
 			}
 		});
 		
+		/* Record a List activity view in Google Analytics */
+		tracker.trackPageView("/" + this.getLocalClassName());
+		
 		fillPeopleListView();
 		startSync(true);
 	}
 	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		/* Record the fact that the user returned to the list */
+		if(true) { //TODO
+			tracker.trackEvent("ui_interaction",				// category
+								"return_to_directory_list",		// action
+								this.getLocalClassName(),		// label
+								0);								// value
+		}
+	}
+	
 	/** Helper class to start the update parse thread.
 	 * Helps distinguish between auto-sync, manual sync, and first-launch sync.
-	 * @param auto	Whether this update was initiated automatically.
+	 * @param auto	Whether this update was initiated automatically (as opposed to through direct user action).
 	 * */
 	public void startSync(boolean auto) {
 		cancelSync = false;
-		if(!syncing) {
+		if(!syncing && mNetworkInfo.isConnected()) {
 			if(auto) {
 				if(firstLaunch) {
 					if (isTimeForSync()) {
+						if(true) { // TODO
+							tracker.trackEvent("sync",				// category
+												"auto_sync",			// action
+												"first_launch",					// label
+												0);						// value
+						}
 						Toast.makeText(getApplicationContext(),
 								getResources().getString(R.string.syncing), Toast.LENGTH_SHORT).show();
 						startXMLParseThread();
 					}
 				} else if(masterSyncSetting) {
 					if (isTimeForSync()) {
+						if(true) { // TODO
+							tracker.trackEvent("sync",				// category
+												"auto_sync",			// action
+												"is_time_for_sync",					// label
+												0);						// value
+						}
 						startXMLParseThread();
 					}
 				}
@@ -134,7 +179,11 @@ public class DirectoryListActivity extends DirectoryActivity {
 						getResources().getString(R.string.syncing), Toast.LENGTH_SHORT).show();
 				startXMLParseThread();
 			}
-		}	
+		}
+		else if (!mNetworkInfo.isConnected() && (isTimeForSync() || !auto)) {
+			Toast.makeText(getApplicationContext(),
+					getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	/** Checks whether it is time to start an auto-update.

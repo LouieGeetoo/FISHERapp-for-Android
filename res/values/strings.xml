@@ -28,4 +28,10 @@
 <string name="share_header">Share with</string>
 <string name="added_to_contacts">added to Google contacts.</string>
 <string name="send_email_header">Send email using</string>
+<string name="call">Call</string>
+<string name="office">Office</string>
+<string name="email">Email</string>
+<string name="phone">Phone</string>
+<string name="no_connection">No data connection.</string>
+<string name="analytics_api_key">UA-2390914-4</string>
 </resources>

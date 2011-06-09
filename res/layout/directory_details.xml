@@ -1,66 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white">
-    <include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
-    <include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
-    <ScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="match_parent">
-		<LinearLayout android:id="@+id/lytDetails"
-			android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:orientation="vertical" >
-				<TextView
-						style="@style/directory_detail_item"
-						android:id="@+id/txtFullName"
-						android:textSize="26sp"
-						android:layout_marginTop="3dp"
-						android:textColor="@color/list_text"
-						android:text="Full N. Name" />
-				<ImageView
-						android:layout_width="match_parent"
-						android:layout_height="1px"
-						android:background="@drawable/list_divider"
-						android:layout_marginBottom="3dp"
-						android:layout_marginTop="3dp"/>
-				<TextView
-						style="@style/directory_detail_item"
-						android:textColor="@color/list_text"
-						android:id="@+id/txtJobTitle"
-						android:text="Job Title" />
-				<TextView
-						style="@style/directory_detail_item"
-						android:id="@+id/txtDepartment"
-						android:text="Department" />
-				<TextView
-						style="@style/directory_detail_item"
-						android:textColor="@color/sub_gray"
-						android:id="@+id/txtGroup"
-						android:text="Faculty" />
-				<ImageView
-						android:layout_width="match_parent"
-						android:layout_height="1px"
-						android:background="@drawable/list_divider"
-						android:layout_marginBottom="3dp"
-						android:layout_marginTop="3dp"/>
-				<TextView
-						style="@style/directory_detail_item"
-						android:textColor="@color/list_text"
-						android:id="@+id/txtOffice"
-						android:text="BASIL 010" />
-				<TextView
-						style="@style/directory_detail_item"
-						android:id="@+id/txtPhone"
-						android:text="585-385-8016"
-						android:autoLink="phone" android:textColorLink="@color/fisher_maroon"/>
-				<TextView
-						style="@style/directory_detail_item"
-						android:id="@+id/txtEmail"
-						android:text="jpray@sjfc.edu"
-						android:autoLink="email" android:textColorLink="@color/fisher_maroon"/>
-	    </LinearLayout>	
-	</ScrollView>
+<LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+	android:orientation="vertical" android:background="@android:color/white" xmlns:android="http://schemas.android.com/apk/res/android">
+	<include android:id="@+id/lytHeadBar" layout="@layout/headbar" />
+	<include android:id="@+id/lytTitleBar" layout="@layout/titlebar" />
+	<LinearLayout android:orientation="vertical" android:id="@+id/linearLayout2" android:layout_width="match_parent" android:layout_height="match_parent">
+		<TextView android:layout_marginTop="3dp" android:textSize="26sp" android:textColor="@color/list_text" android:layout_width="wrap_content" android:text="Full N. Name" android:id="@+id/txtFullName" style="@style/directory_detail_item" android:layout_height="wrap_content"></TextView>
+		<TextView android:textColor="@color/sub_gray_dark" android:layout_width="wrap_content" android:text="Job Title" android:id="@+id/txtJobTitle" style="@style/directory_detail_item" android:layout_height="wrap_content"></TextView>
+		<LinearLayout android:id="@+id/linearLayout3" android:layout_width="match_parent" android:orientation="vertical" android:layout_height="match_parent" android:layout_margin="5dp">
+			<LinearLayout android:padding="0dp" android:orientation="horizontal" android:weightSum="3" android:layout_weight="1" android:addStatesFromChildren="true" android:layout_width="match_parent" android:layout_height="0dp" android:id="@+id/lytGroup" android:clickable="false" android:background="@drawable/btn_default_normal_disable">
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="Faculty" android:layout_width="0dp" android:id="@+id/txtGroup" android:textSize="18sp" android:background="@android:color/transparent" android:textColor="@android:color/black" android:layout_weight="1" android:clickable="false" android:layout_height="match_parent"></Button>
+				<Button android:layout_gravity="center_vertical" android:layout_width="0dp" android:id="@+id/txtDepartment" android:layout_height="match_parent" android:layout_weight="2" android:clickable="false" style="@style/inner_button_inactive" android:text="School of Pharmacy Administration" android:ellipsize="marquee"></Button>
+			</LinearLayout>
+			<LinearLayout android:baselineAligned="true" android:padding="0dp" android:orientation="horizontal" android:weightSum="3" android:layout_weight="1" android:addStatesFromChildren="true" android:layout_width="match_parent" android:layout_height="0dp" android:id="@+id/lytOffice" android:clickable="false" android:background="@drawable/btn_default_normal_disable">
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="@string/office" android:layout_width="0dp" android:id="@+id/Button1" android:textSize="18sp" android:background="@android:color/transparent" android:textColor="@android:color/black" android:layout_height="match_parent" android:layout_weight="1" android:clickable="false"></Button>
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="KEARN 053" android:layout_width="0dp" android:id="@+id/txtOffice" android:textSize="22sp" android:layout_height="match_parent" android:layout_weight="2" android:clickable="false" style="@style/inner_button_inactive" android:ellipsize="marquee"></Button>
+			</LinearLayout>
+			<LinearLayout android:baselineAligned="true" android:background="@android:drawable/btn_default" android:padding="0dp" android:orientation="horizontal" android:layout_weight="1" android:clickable="true" android:addStatesFromChildren="true" android:layout_width="match_parent" android:layout_height="0dp" android:id="@+id/lytPhone">
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="@string/phone" android:layout_width="0dp" android:textSize="18sp" android:background="@android:color/transparent" android:textColor="@android:color/black" android:layout_height="match_parent" android:layout_weight="1" android:id="@+id/phoneOuter"></Button>
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="555-555-5555" android:layout_width="0dp" android:id="@+id/txtPhone" android:textSize="22sp" android:textColor="@android:color/black" android:layout_height="match_parent" android:layout_weight="2" android:background="@android:drawable/btn_default" android:ellipsize="marquee"></Button>
+			</LinearLayout>
+			<LinearLayout android:baselineAligned="true" android:background="@android:drawable/btn_default" android:padding="0dp" android:orientation="horizontal" android:layout_weight="1" android:clickable="true" android:addStatesFromChildren="true" android:layout_width="match_parent" android:layout_height="0dp" android:id="@+id/lytEmail">
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="@string/email" android:layout_width="0dp" android:textSize="18sp" android:background="@android:color/transparent" android:textColor="@android:color/black" android:layout_height="match_parent" android:layout_weight="1" android:id="@+id/emailOuter"></Button>
+				<Button android:gravity="center" android:layout_gravity="center_vertical" android:text="djohnson@sjfc.edu" android:layout_width="0dp" android:id="@+id/txtEmail" android:textSize="22sp" android:textColor="@android:color/black" android:layout_height="match_parent" android:layout_weight="2" android:background="@android:drawable/btn_default" android:ellipsize="marquee"></Button>
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
 </LinearLayout>
